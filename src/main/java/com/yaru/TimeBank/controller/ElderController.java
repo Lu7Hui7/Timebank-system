@@ -53,4 +53,29 @@ public class ElderController {
         }
         return R.success(e);
     }
+    /**
+     * 老年需求者退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        //清理Session中保存的当前登录员工的id
+        request.getSession().removeAttribute("elder");
+        return R.success("退出成功");
+    }
+
+    /**
+     * 老年需求者注册
+     * @param elder
+     * @return
+     */
+    @PostMapping("/register")
+    public R<String> save(HttpServletRequest request,@RequestBody Elder elder){
+        log.info("老年需求者注册，老年需求者信息：{}",elder.toString());
+
+        elderService.save(elder);
+
+        return R.success("老年需求者注册成功");
+    }
 }

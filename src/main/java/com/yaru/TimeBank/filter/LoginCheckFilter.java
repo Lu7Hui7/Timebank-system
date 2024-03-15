@@ -40,8 +40,10 @@ public class LoginCheckFilter implements Filter{
                 "/front/**",
                 "/common/**",
                 "/volunteer/sendMsg",
-                "/volunteer/login",
-                "/elder/login"
+                "/volunteer/**",
+                "/volunteer/logout",
+                "/elder/**",
+                "/elder/logout"
         };
 
         //2、判断本次请求是否需要处理
@@ -55,10 +57,10 @@ public class LoginCheckFilter implements Filter{
         }
 
         //4-1、判断登录状态，如果已登录，则直接放行
-        if(request.getSession().getAttribute("employee") != null){
-            log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("employee"));
+        if(request.getSession().getAttribute("volunteer") != null){
+            log.info("用户已登录，用户id为：{}",request.getSession().getAttribute("volunteer"));
 
-            Long empId = (Long) request.getSession().getAttribute("employee");
+            Long empId = (Long) request.getSession().getAttribute("volunteer");
             BaseContext.setCurrentId(empId);
 
             filterChain.doFilter(request,response);

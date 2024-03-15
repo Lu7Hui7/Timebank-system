@@ -51,4 +51,29 @@ public class VolunteerController {
         }
         return R.success(v);
     }
+    /**
+     * 志愿者退出
+     * @param request
+     * @return
+     */
+    @PostMapping("/logout")
+    public R<String> logout(HttpServletRequest request){
+        //清理Session中保存的当前登录员工的id
+        request.getSession().removeAttribute("volunteer");
+        return R.success("退出成功");
+    }
+
+    /**
+     * 志愿者注册
+     * @param volunteer
+     * @return
+     */
+    @PostMapping("/register")
+    public R<String> save(HttpServletRequest request,@RequestBody Volunteer volunteer){
+        log.info("志愿者注册，志愿者信息：{}",volunteer.toString());
+
+        volunteerService.save(volunteer);
+
+        return R.success("志愿者注册成功");
+    }
 }

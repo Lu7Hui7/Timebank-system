@@ -12,6 +12,8 @@ public class Elder {
 
     private Long id;
 
+    private String name;
+
     private String username;
 
     private String password;
