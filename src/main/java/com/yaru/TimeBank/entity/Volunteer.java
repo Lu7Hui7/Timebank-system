@@ -1,17 +1,14 @@
 package com.yaru.TimeBank.entity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 
 /**
- * 管理员实体
+ * 志愿者实体
  */
 @Data
-public class Admin implements Serializable {
+public class Volunteer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -23,5 +20,15 @@ public class Admin implements Serializable {
 
     private String phone;
 
+    private String gender;
 
+    private String address;
+
+    private String identityNumber;
+
+    private String accountStatus;
+
+    private String physical;
+
+    private String remark;
 }

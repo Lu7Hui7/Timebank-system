@@ -39,8 +39,8 @@ public class LoginCheckFilter implements Filter{
                 "/backend/**",
                 "/front/**",
                 "/common/**",
-                "/user/sendMsg",
-                "/user/login"
+                "/volunteer/sendMsg",
+                "/volunteer/**"
         };
 
         //2、判断本次请求是否需要处理

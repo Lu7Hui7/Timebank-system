@@ -22,7 +22,7 @@ public class AdminController {
     private AdminService adminService;
 
     /**
-     * 员工登录
+     * 管理员登录
      * @param request
      * @param admin
      * @return R
@@ -32,31 +32,28 @@ public class AdminController {
 
         //1、将页面提交的密码password进行md5加密处理
         String password = admin.getPassword();
-        password = DigestUtils.md5DigestAsHex(password.getBytes());
+        /*password = DigestUtils.md5DigestAsHex(password.getBytes());*/
 
         //2、根据页面提交的用户名username查询数据库
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Admin::getUsername,admin.getUsername());
-        Admin emp = adminService.getOne(queryWrapper);
+        Admin ad = adminService.getOne(queryWrapper);
 
         //3、如果没有查询到则返回登录失败结果
-        if(emp == null){
+        if(ad == null){
             return R.error("登录失败");
         }
 
         //4、密码比对，如果不一致则返回登录失败结果
-        if(!emp.getPassword().equals(password)){
+        if(!ad.getPassword().equals(password)){
             return R.error("登录失败");
         }
-
-        //5、查看员工状态，如果为已禁用状态，则返回员工已禁用结果
-        if(emp.getStatus() == 0){
-            return R.error("账号已禁用");
+        //4、密码比对，如果一致
+        if(ad.getPassword().equals(password)){
+            //6、登录成功，将员工id存入Session并返回登录成功结果
+            request.getSession().setAttribute("admin",ad.getId());
         }
-
-        //6、登录成功，将员工id存入Session并返回登录成功结果
-        request.getSession().setAttribute("employee",emp.getId());
-        return R.success(emp);
+        return R.success(ad);
     }
 
 //    /**
