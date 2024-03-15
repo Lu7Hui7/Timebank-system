@@ -72,6 +72,7 @@ public class VolunteerController {
     public R<String> save(HttpServletRequest request,@RequestBody Volunteer volunteer){
         log.info("志愿者注册，志愿者信息：{}",volunteer.toString());
 
+        volunteer.setAccountStatus("冻结");
         volunteerService.save(volunteer);
 
         return R.success("志愿者注册成功");

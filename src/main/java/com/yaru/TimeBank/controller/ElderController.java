@@ -74,6 +74,7 @@ public class ElderController {
     public R<String> save(HttpServletRequest request,@RequestBody Elder elder){
         log.info("老年需求者注册，老年需求者信息：{}",elder.toString());
 
+        elder.setAccountStatus("冻结");
         elderService.save(elder);
 
         return R.success("老年需求者注册成功");
