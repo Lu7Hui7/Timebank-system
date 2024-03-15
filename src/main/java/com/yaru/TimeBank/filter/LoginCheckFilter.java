@@ -40,7 +40,8 @@ public class LoginCheckFilter implements Filter{
                 "/front/**",
                 "/common/**",
                 "/volunteer/sendMsg",
-                "/volunteer/**"
+                "/volunteer/login",
+                "/elder/login"
         };
 
         //2、判断本次请求是否需要处理
