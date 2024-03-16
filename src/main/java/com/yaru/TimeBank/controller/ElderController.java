@@ -7,8 +7,10 @@ import com.yaru.TimeBank.entity.Volunteer;
 import com.yaru.TimeBank.service.ElderService;
 import com.yaru.TimeBank.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -20,7 +22,7 @@ public class ElderController {
     @Autowired
     private ElderService elderService;
     /**
-     * 志愿者登录
+     * 老年需求者登录
      * @param request
      * @param elder
      * @return R
@@ -79,4 +81,6 @@ public class ElderController {
 
         return R.success("老年需求者注册成功");
     }
+
+
 }
