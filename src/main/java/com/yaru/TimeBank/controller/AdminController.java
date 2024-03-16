@@ -3,21 +3,22 @@ package com.yaru.TimeBank.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
+import com.yaru.TimeBank.dto.AdminRequirementDTO;
 import com.yaru.TimeBank.entity.Admin;
 import com.yaru.TimeBank.entity.Elder;
 import com.yaru.TimeBank.entity.Volunteer;
 import com.yaru.TimeBank.service.AdminService;
 import com.yaru.TimeBank.service.ElderService;
+import com.yaru.TimeBank.service.AdminRequirementService;
 import com.yaru.TimeBank.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 
 @Slf4j
 @RestController
@@ -30,6 +31,8 @@ public class AdminController {
     private ElderService elderService;
     @Autowired
     private VolunteerService volunteerService;
+    @Autowired
+    private AdminRequirementService requirementService;
 
     /**
      * 管理员登录
@@ -81,52 +84,93 @@ public class AdminController {
      * 老年需求者信息分页查询
      * @param page
      * @param pageSize
-     * @param name
+     * @param params
      * @return
      */
     @GetMapping("/elder/page")
-    public R<Page> elderPage(int page,int pageSize,String name){
-        log.info("page = {},pageSize = {},name = {}" ,page,pageSize,name);
+    public R<Page<Elder>> elderPage(int page, int pageSize, @RequestParam(required = false) String[] params) {
+        log.info("page = {}, pageSize = {}, params = {}", page, pageSize, Arrays.toString(params));
 
-        //构造分页构造器
-        Page pageInfo = new Page(page,pageSize);
+        // 构造分页构造器
+        Page<Elder> pageInfo = new Page<>(page, pageSize);
 
-        //构造条件构造器
-        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper();
-        //添加过滤条件
-        queryWrapper.like(StringUtils.isNotEmpty(name),Elder::getName,name);
-        //添加排序条件
-        queryWrapper.orderByAsc(Elder::getId);
+        // 构造条件构造器
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
 
-        //执行查询
-        elderService.page(pageInfo,queryWrapper);
+        // 如果参数数组不为空，则根据参数数组中的条件添加相应的模糊查询条件
+        if (params != null && params.length > 0) {
+            // 遍历参数数组，解析参数并添加相应的模糊查询条件
+            for (String param : params) {
+                String[] keyValue = param.split("=", 2);
+                if (keyValue.length == 2) {
+                    String key = keyValue[0];
+                    String value = keyValue[1];
+                    // 根据参数的键值对添加模糊查询条件
+                    if ("id".equals(key)) {
+                        queryWrapper.like(Elder::getId, value);
+                    } else if ("name".equals(key)) {
+                        queryWrapper.like(Elder::getName, value);
+                    } else if ("address".equals(key)) {
+                        queryWrapper.like(Elder::getAddress, value);
+                    } else if ("identityNumber".equals(key)) {
+                        queryWrapper.like(Elder::getIdentityNumber, value);
+                    } else if ("accountStatus".equals(key)) {
+                        queryWrapper.like(Elder::getAccountStatus, value);
+                    }
+                }
+            }
+        }
+
+        // 执行查询
+        elderService.page(pageInfo, queryWrapper);
 
         return R.success(pageInfo);
     }
+
 
     /**
      * 志愿者者信息分页查询
      * @param page
      * @param pageSize
-     * @param name
+     * @param params
      * @return
      */
     @GetMapping("/volunteer/page")
-    public R<Page> volunteerPage(int page, int pageSize, String name){
-        log.info("page = {},pageSize = {},name = {}" ,page,pageSize,name);
+    public R<Page<Volunteer>> volunteerPage(int page, int pageSize,
+                                            @RequestParam(required = false) String[] params) {
+        log.info("page = {}, pageSize = {}, params = {}", page, pageSize, Arrays.toString(params));
 
-        //构造分页构造器
-        Page pageInfo = new Page(page,pageSize);
+        // 构造分页构造器
+        Page<Volunteer> pageInfo = new Page<>(page, pageSize);
 
-        //构造条件构造器
-        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper();
-        //添加过滤条件
-        queryWrapper.like(StringUtils.isNotEmpty(name),Volunteer::getName,name);
-        //添加排序条件
-        queryWrapper.orderByAsc(Volunteer::getId);
+        // 构造条件构造器
+        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
 
-        //执行查询
-        volunteerService.page(pageInfo,queryWrapper);
+        // 如果参数数组不为空，则遍历参数数组，解析参数并添加相应的模糊查询条件
+        if (params != null && params.length > 0) {
+            for (String param : params) {
+                String[] keyValue = param.split("=", 2);
+                if (keyValue.length == 2) {
+                    String key = keyValue[0];
+                    String value = keyValue[1];
+                    // 根据参数的键值对添加模糊查询条件
+                    if ("id".equals(key)) {
+                        queryWrapper.like(Volunteer::getId, value);
+                    } else if ("name".equals(key)) {
+                        queryWrapper.like(Volunteer::getName, value);
+                    } else if ("address".equals(key)) {
+                        queryWrapper.like(Volunteer::getAddress, value);
+                    } else if ("identityNumber".equals(key)) {
+                        queryWrapper.like(Volunteer::getIdentityNumber, value);
+                    } else if ("status".equals(key)) {
+                        queryWrapper.like(Volunteer::getAccountStatus, value);
+                    }
+                }
+            }
+        }
+
+        // 执行查询
+        volunteerService.page(pageInfo, queryWrapper);
 
         return R.success(pageInfo);
     }
@@ -233,6 +277,26 @@ public class AdminController {
 
         return R.success("志愿者信息已更新");
     }
+    /**
+     * 分页查询志愿者请求信息
+     * @param page 当前页码
+     * @param pageSize 每页大小
+     * @param name 搜索关键字
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/request/page")
+    public R<Page<AdminRequirementDTO>> volunteerRequestPage(@RequestParam int page,
+                                                             @RequestParam int pageSize,
+                                                             @RequestParam(required = false) String name) {
+        log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
+
+        // 调用 Service 层方法执行分页查询
+        Page<AdminRequirementDTO> resultPage = requirementService.getAdminRequirementPage(page, pageSize, name);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
+
 //
 //    /**
 //     * 新增员工
