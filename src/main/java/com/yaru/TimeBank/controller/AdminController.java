@@ -149,7 +149,7 @@ public class AdminController {
         // 如果参数数组不为空，则遍历参数数组，解析参数并添加相应的模糊查询条件
         if (params != null && params.length > 0) {
             for (String param : params) {
-                String[] keyValue = param.split("=", 2);
+                String[] keyValue = param.split("=");
                 if (keyValue.length == 2) {
                     String key = keyValue[0];
                     String value = keyValue[1];
@@ -162,7 +162,7 @@ public class AdminController {
                         queryWrapper.like(Volunteer::getAddress, value);
                     } else if ("identityNumber".equals(key)) {
                         queryWrapper.like(Volunteer::getIdentityNumber, value);
-                    } else if ("status".equals(key)) {
+                    } else if ("accountStatus".equals(key)) {
                         queryWrapper.like(Volunteer::getAccountStatus, value);
                     }
                 }
@@ -278,7 +278,7 @@ public class AdminController {
         return R.success("志愿者信息已更新");
     }
     /**
-     * 分页查询志愿者请求信息
+     * 分页查询老年需求者需求信息
      * @param page 当前页码
      * @param pageSize 每页大小
      * @param name 搜索关键字
