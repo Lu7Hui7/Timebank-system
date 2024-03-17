@@ -18,7 +18,7 @@ public class Activity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long activityId;
+    private Long Id;
 
     // 使用 @ManyToOne 注解表示与 Volunteer 实体类的多对一关系，并指定关联字段
     @ManyToOne
