@@ -21,7 +21,7 @@ public class AdminRequirementServiceImpl implements AdminRequirementService {
         Page<AdminRequirementDTO> pageInfo = new Page<>(page, pageSize);
 
         // 执行多表连接查询
-        IPage<AdminRequirementDTO> resultPage = adminRequirementMapper.selectVolunteerRequestPage(pageInfo, name);
+        IPage<AdminRequirementDTO> resultPage = adminRequirementMapper.selectElderRequestPage(pageInfo, name);
 
         return (Page<AdminRequirementDTO>) resultPage;
     }

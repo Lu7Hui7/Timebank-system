@@ -13,13 +13,13 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface AdminRequirementMapper extends BaseMapper<AdminRequirementDTO> {
     @Select("SELECT r.id AS requestId, r.service_name AS serviceName, r.service_content AS serviceContent, " +
-            "e.name AS elderName, " +
+            "e.name AS elderName, e.address AS address, " +
             "r.create_time AS createTime,r.last_time AS lastTime,r.duration_hours AS durationHours, " +
             "r.status AS status " +
             "FROM requirement r " +
             "LEFT JOIN elder e ON r.elder_id = e.id " +
             "LEFT JOIN volunteer v ON r.volunteer_id = v.id " +
             "WHERE #{name} IS NULL OR r.service_name LIKE CONCAT('%', #{name}, '%')")
-    IPage<AdminRequirementDTO> selectVolunteerRequestPage(Page<?> page, @Param("name") String name);
+    IPage<AdminRequirementDTO> selectElderRequestPage(Page<?> page, @Param("name") String name);
 }
 

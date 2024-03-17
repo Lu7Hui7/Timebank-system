@@ -3,11 +3,9 @@ package com.yaru.TimeBank.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
+import com.yaru.TimeBank.dto.AdminActivityDTO;
 import com.yaru.TimeBank.dto.AdminRequirementDTO;
-import com.yaru.TimeBank.entity.Admin;
-import com.yaru.TimeBank.entity.Elder;
-import com.yaru.TimeBank.entity.Requirement;
-import com.yaru.TimeBank.entity.Volunteer;
+import com.yaru.TimeBank.entity.*;
 import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
@@ -34,6 +32,10 @@ public class AdminController {
     private AdminRequirementService adminRequirementService;
     @Autowired
     private RequirementService requirementService;
+    @Autowired
+    private AdminActivityService adminActivityService;
+    @Autowired
+    private ActivityService activityService;
     /**
      * 管理员登录
      * @param request
@@ -285,7 +287,7 @@ public class AdminController {
      * @return 返回分页查询结果
      */
     @GetMapping("/request/page")
-    public R<Page<AdminRequirementDTO>> volunteerRequestPage(@RequestParam int page,
+    public R<Page<AdminRequirementDTO>> elderRequestPage(@RequestParam int page,
                                                              @RequestParam int pageSize,
                                                              @RequestParam(required = false) String name) {
         log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
@@ -303,7 +305,7 @@ public class AdminController {
      * @param id 老人需求表的ID
      * @return 返回操作结果
      */
-    @PutMapping("/request/update")
+    @PutMapping("/review/request")
     public R<String> reviewRequirementStatus(@RequestParam("id") Long id) {
         // 根据ID查询老人需求表信息
         Requirement requirement = requirementService.getById(id);
@@ -321,6 +323,48 @@ public class AdminController {
         return R.success("老人需求表的审核状态已更新");
     }
 
+    /**
+     * 分页查询志愿者活动信息
+     * @param page 当前页码
+     * @param pageSize 每页大小
+     * @param name 搜索关键字
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/activity/page")
+    public R<Page<AdminActivityDTO>> volunteerActivityPage(@RequestParam int page,
+                                                             @RequestParam int pageSize,
+                                                             @RequestParam(required = false) String name) {
+        log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
+
+        // 调用 Service 层方法执行分页查询
+        Page<AdminActivityDTO> resultPage = adminActivityService.getAdminActivityPage(page, pageSize, name);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
+
+    /**
+     * 根据请求体中的参数，修改活动表的审核状态
+     * @param id 活动表的ID
+     * @return 返回操作结果
+     */
+    @PutMapping("/review/activity")
+    public R<String> reviewActivityStatus(@RequestParam("id") Long id) {
+        // 根据ID查询活动表信息
+        Activity activity = activityService.getById(id);
+        if (activity == null) {
+            // 如果找不到对应ID的活动表，返回错误信息
+            return R.error("找不到对应ID的活动表");
+        }
+
+        // 更新审核状态
+        activity.setActivityStatus("审核通过");
+
+        // 更新活动表信息
+        activityService.updateById(activity);
+
+        return R.success("活动表的审核状态已更新");
+    }
 
 //
 //    /**

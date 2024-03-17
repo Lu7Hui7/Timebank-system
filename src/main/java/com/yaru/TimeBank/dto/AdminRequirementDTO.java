@@ -9,6 +9,16 @@ public class AdminRequirementDTO {
     private String serviceName;
     private String serviceContent;
     private String elderName;
+    private String address;
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createTime;
 
