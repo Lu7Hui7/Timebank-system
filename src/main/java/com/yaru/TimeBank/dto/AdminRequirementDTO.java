@@ -11,7 +11,18 @@ public class AdminRequirementDTO {
     private String elderName;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createTime;
+
+    private LocalDate lastTime;
     private Long durationHours;
+
+    public LocalDate getLastTime() {
+        return lastTime;
+    }
+
+    public void setLastTime(LocalDate lastTime) {
+        this.lastTime = lastTime;
+    }
+
     private String status;
 
     // Getter 和 Setter 方法

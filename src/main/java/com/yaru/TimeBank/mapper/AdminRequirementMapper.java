@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
 public interface AdminRequirementMapper extends BaseMapper<AdminRequirementDTO> {
     @Select("SELECT r.id AS requestId, r.service_name AS serviceName, r.service_content AS serviceContent, " +
             "e.name AS elderName, " +
-            "r.create_time AS createTime, r.duration_hours AS durationHours, " +
+            "r.create_time AS createTime,r.last_time AS lastTime,r.duration_hours AS durationHours, " +
             "r.status AS status " +
             "FROM requirement r " +
             "LEFT JOIN elder e ON r.elder_id = e.id " +

@@ -6,11 +6,9 @@ import com.yaru.TimeBank.common.R;
 import com.yaru.TimeBank.dto.AdminRequirementDTO;
 import com.yaru.TimeBank.entity.Admin;
 import com.yaru.TimeBank.entity.Elder;
+import com.yaru.TimeBank.entity.Requirement;
 import com.yaru.TimeBank.entity.Volunteer;
-import com.yaru.TimeBank.service.AdminService;
-import com.yaru.TimeBank.service.ElderService;
-import com.yaru.TimeBank.service.AdminRequirementService;
-import com.yaru.TimeBank.service.VolunteerService;
+import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -19,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -32,8 +31,9 @@ public class AdminController {
     @Autowired
     private VolunteerService volunteerService;
     @Autowired
-    private AdminRequirementService requirementService;
-
+    private AdminRequirementService adminRequirementService;
+    @Autowired
+    private RequirementService requirementService;
     /**
      * 管理员登录
      * @param request
@@ -291,11 +291,36 @@ public class AdminController {
         log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
 
         // 调用 Service 层方法执行分页查询
-        Page<AdminRequirementDTO> resultPage = requirementService.getAdminRequirementPage(page, pageSize, name);
+        Page<AdminRequirementDTO> resultPage = adminRequirementService.getAdminRequirementPage(page, pageSize, name);
 
         // 返回分页查询结果
         return R.success(resultPage);
     }
+
+
+    /**
+     * 根据请求体中的参数，修改老人需求表的审核状态
+     * @param id 老人需求表的ID
+     * @return 返回操作结果
+     */
+    @PutMapping("/request/update")
+    public R<String> reviewRequirementStatus(@RequestParam("id") Long id) {
+        // 根据ID查询老人需求表信息
+        Requirement requirement = requirementService.getById(id);
+        if (requirement == null) {
+            // 如果找不到对应ID的老人需求表，返回错误信息
+            return R.error("找不到对应ID的老人需求表");
+        }
+
+        // 更新审核状态
+        requirement.setStatus("审核通过");
+
+        // 更新老人需求表信息
+        requirementService.updateById(requirement);
+
+        return R.success("老人需求表的审核状态已更新");
+    }
+
 
 //
 //    /**
