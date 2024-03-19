@@ -14,8 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDate;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+
 
 @Slf4j
 @RestController
@@ -268,7 +272,7 @@ public class AdminController {
         Volunteer volunteer = volunteerService.getById(id);
         if (volunteer == null) {
             // 如果找不到对应ID的老年需求者，返回错误信息
-            return R.error("找不到对应ID的老年需求者");
+            return R.error("找不到对应ID的志愿者");
         }
 
         // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
@@ -279,21 +283,33 @@ public class AdminController {
 
         return R.success("志愿者信息已更新");
     }
+
     /**
      * 分页查询老年需求者需求信息
-     * @param page 当前页码
-     * @param pageSize 每页大小
-     * @param name 搜索关键字
+     *
+     * @param page        当前页码
+     * @param pageSize    每页大小
+     * @param serviceName 服务名称
+     * @param address     地址
+     * @param durationHours 服务时长
+     * @param id          ID
      * @return 返回分页查询结果
      */
     @GetMapping("/request/page")
-    public R<Page<AdminRequirementDTO>> elderRequestPage(@RequestParam int page,
-                                                             @RequestParam int pageSize,
-                                                             @RequestParam(required = false) String name) {
-        log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
+    public R<Page<AdminRequirementDTO>> elderRequestPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String serviceName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String durationHours,
+            @RequestParam(required = false) String id) {
+        log.info("Page = {}, PageSize = {}, ServiceName = {}, Address = {}, DurationHours = {}, Id = {}",
+                page, pageSize, serviceName, address, durationHours, id);
 
         // 调用 Service 层方法执行分页查询
-        Page<AdminRequirementDTO> resultPage = adminRequirementService.getAdminRequirementPage(page, pageSize, name);
+        Page<AdminRequirementDTO> resultPage = adminRequirementService.getAdminRequirementPage(page, pageSize,
+                serviceName, address,
+                durationHours, id);
 
         // 返回分页查询结果
         return R.success(resultPage);
@@ -314,8 +330,11 @@ public class AdminController {
             return R.error("找不到对应ID的老人需求表");
         }
 
-        // 更新审核状态
+        // 更新审核状态为“审核通过”
         requirement.setStatus("审核通过");
+
+        // 设置审核时间为当前时间
+        requirement.setReviewTime(LocalDate.now());
 
         // 更新老人需求表信息
         requirementService.updateById(requirement);
@@ -327,22 +346,29 @@ public class AdminController {
      * 分页查询志愿者活动信息
      * @param page 当前页码
      * @param pageSize 每页大小
-     * @param name 搜索关键字
+     * @param id 活动ID（模糊查询）
+     * @param activityName 活动名称（模糊查询）
+     * @param address 活动地址（模糊查询）
+     * @param volunteerHours 志愿时长（模糊查询）
      * @return 返回分页查询结果
      */
     @GetMapping("/activity/page")
-    public R<Page<AdminActivityDTO>> volunteerActivityPage(@RequestParam int page,
-                                                             @RequestParam int pageSize,
-                                                             @RequestParam(required = false) String name) {
-        log.info("Page = {}, PageSize = {}, Name = {}", page, pageSize, name);
+    public R<Page<AdminActivityDTO>> volunteerActivityPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String activityName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String volunteerHours) {
+        log.info("Page = {}, PageSize = {}, ID = {}, ActivityName = {}, Address = {}, VolunteerHours = {}",
+                page, pageSize, id, activityName, address, volunteerHours);
 
         // 调用 Service 层方法执行分页查询
-        Page<AdminActivityDTO> resultPage = adminActivityService.getAdminActivityPage(page, pageSize, name);
+        Page<AdminActivityDTO> resultPage = adminActivityService.getAdminActivityPage(page, pageSize, id, activityName, address, volunteerHours);
 
         // 返回分页查询结果
         return R.success(resultPage);
     }
-
     /**
      * 根据请求体中的参数，修改活动表的审核状态
      * @param id 活动表的ID

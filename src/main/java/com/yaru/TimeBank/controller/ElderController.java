@@ -8,6 +8,7 @@ import com.yaru.TimeBank.service.ElderService;
 import com.yaru.TimeBank.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -80,6 +81,33 @@ public class ElderController {
         elderService.save(elder);
 
         return R.success("老年需求者注册成功");
+    }
+    /**
+     * 根据id修改老年需求者的用户信息
+     * @param id 老年需求者ID
+     * @param updatedUserInfo 更新后的老年需求者用户信息
+     * @return 返回操作结果
+     */
+    @PutMapping("/update")
+    public R<String> updateElderUserInfo(@RequestParam("id") Long id, @RequestBody(required = false) Elder updatedUserInfo) {
+        if (updatedUserInfo == null) {
+            return R.error("请求体为空");
+        }
+
+        // 根据ID查询老年需求者信息
+        Elder elder = elderService.getById(id);
+        if (elder == null) {
+            // 如果找不到对应ID的老年需求者，返回错误信息
+            return R.error("找不到对应ID的老年需求者");
+        }
+
+        // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
+        BeanUtils.copyProperties(updatedUserInfo, elder);
+
+        // 更新老年需求者信息
+        elderService.updateById(elder);
+
+        return R.success("老年需求者用户信息已更新");
     }
 
 

@@ -5,5 +5,9 @@ import com.yaru.TimeBank.dto.AdminActivityDTO;
 import com.yaru.TimeBank.dto.AdminRequirementDTO;
 
 public interface AdminActivityService {
-    Page<AdminActivityDTO> getAdminActivityPage(int page, int pageSize, String name);
+    Page<AdminActivityDTO> getAdminActivityPage(int page, int pageSize,
+                                                      String id,
+                                                      String activityName,
+                                                      String address,
+                                                      String volunteerHours);
 }
