@@ -4,12 +4,39 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import java.time.LocalDate;
 
-public class AdminRequirementDTO {
+public class RequirementDTO {
     private Long requestId;
     private String serviceName;
     private String serviceContent;
     private String elderName;
     private String address;
+
+    private String physical;
+    private String status;
+    private String volunteerName;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate createTime;
+
+    private LocalDate lastTime;
+    private Long durationHours;
+
+    public String getPhysical() {
+        return physical;
+    }
+
+    public void setPhysical(String physical) {
+        this.physical = physical;
+    }
+
+    public String getVolunteerName() {
+        return volunteerName;
+    }
+
+    public void setVolunteerName(String volunteerName) {
+        this.volunteerName = volunteerName;
+    }
+
+
 
     public String getAddress() {
         return address;
@@ -19,11 +46,7 @@ public class AdminRequirementDTO {
         this.address = address;
     }
 
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate createTime;
 
-    private LocalDate lastTime;
-    private Long durationHours;
 
     public LocalDate getLastTime() {
         return lastTime;
@@ -33,7 +56,6 @@ public class AdminRequirementDTO {
         this.lastTime = lastTime;
     }
 
-    private String status;
 
     // Getter 和 Setter 方法
     public Long getRequestId() {

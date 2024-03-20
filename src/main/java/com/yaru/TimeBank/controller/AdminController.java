@@ -4,21 +4,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
 import com.yaru.TimeBank.dto.AdminActivityDTO;
-import com.yaru.TimeBank.dto.AdminRequirementDTO;
+import com.yaru.TimeBank.dto.RequirementDTO;
 import com.yaru.TimeBank.entity.*;
 import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -33,7 +30,7 @@ public class AdminController {
     @Autowired
     private VolunteerService volunteerService;
     @Autowired
-    private AdminRequirementService adminRequirementService;
+    private AdminRequirementDTOService adminRequirementDTOService;
     @Autowired
     private RequirementService requirementService;
     @Autowired
@@ -296,7 +293,7 @@ public class AdminController {
      * @return 返回分页查询结果
      */
     @GetMapping("/request/page")
-    public R<Page<AdminRequirementDTO>> elderRequestPage(
+    public R<Page<RequirementDTO>> elderRequestPage(
             @RequestParam int page,
             @RequestParam int pageSize,
             @RequestParam(required = false) String serviceName,
@@ -307,7 +304,7 @@ public class AdminController {
                 page, pageSize, serviceName, address, durationHours, id);
 
         // 调用 Service 层方法执行分页查询
-        Page<AdminRequirementDTO> resultPage = adminRequirementService.getAdminRequirementPage(page, pageSize,
+        Page<RequirementDTO> resultPage = adminRequirementDTOService.getAdminRequirementPage(page, pageSize,
                 serviceName, address,
                 durationHours, id);
 
@@ -334,7 +331,7 @@ public class AdminController {
         requirement.setStatus("审核通过");
 
         // 设置审核时间为当前时间
-        requirement.setReviewTime(LocalDate.now());
+        requirement.setReviewTime(LocalDateTime.now());
 
         // 更新老人需求表信息
         requirementService.updateById(requirement);

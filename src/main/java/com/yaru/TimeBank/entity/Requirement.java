@@ -3,6 +3,7 @@ package com.yaru.TimeBank.entity;
 import lombok.Data;
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 老人需求表实体
@@ -13,13 +14,13 @@ public class Requirement {
     private static final long serialVersionUID = 1L;
 
     @Id
+    @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
     private String serviceName;
 
     private String serviceContent;
-
 
     // 使用 @ManyToOne 注解表示与 Elder 实体类的多对一关系，并指定关联字段
     @ManyToOne
@@ -31,13 +32,13 @@ public class Requirement {
     @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
     private Long volunteerId;
 
-    private LocalDate lastTime;
+    private LocalDateTime lastTime;
 
-    private LocalDate createTime;
+    private LocalDateTime createTime;
 
     private Long durationHours;
 
-    private LocalDate reviewTime;
+    private LocalDateTime reviewTime;
 
     private String status;
 }
