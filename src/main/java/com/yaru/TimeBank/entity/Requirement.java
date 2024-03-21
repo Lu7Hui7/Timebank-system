@@ -16,7 +16,7 @@ public class Requirement {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     private String serviceName;
 

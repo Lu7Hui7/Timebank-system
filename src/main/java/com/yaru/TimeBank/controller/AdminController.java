@@ -3,7 +3,7 @@ package com.yaru.TimeBank.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
-import com.yaru.TimeBank.dto.AdminActivityDTO;
+import com.yaru.TimeBank.dto.ActivityDTO;
 import com.yaru.TimeBank.dto.RequirementDTO;
 import com.yaru.TimeBank.entity.*;
 import com.yaru.TimeBank.service.*;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
@@ -350,7 +349,7 @@ public class AdminController {
      * @return 返回分页查询结果
      */
     @GetMapping("/activity/page")
-    public R<Page<AdminActivityDTO>> volunteerActivityPage(
+    public R<Page<ActivityDTO>> volunteerActivityPage(
             @RequestParam int page,
             @RequestParam int pageSize,
             @RequestParam(required = false) String id,
@@ -361,7 +360,7 @@ public class AdminController {
                 page, pageSize, id, activityName, address, volunteerHours);
 
         // 调用 Service 层方法执行分页查询
-        Page<AdminActivityDTO> resultPage = adminActivityService.getAdminActivityPage(page, pageSize, id, activityName, address, volunteerHours);
+        Page<ActivityDTO> resultPage = adminActivityService.getAdminActivityPage(page, pageSize, id, activityName, address, volunteerHours);
 
         // 返回分页查询结果
         return R.success(resultPage);

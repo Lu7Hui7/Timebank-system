@@ -3,9 +3,11 @@ package com.yaru.TimeBank.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
+import com.yaru.TimeBank.dto.ActivityDTO;
 import com.yaru.TimeBank.dto.RequirementDTO;
 import com.yaru.TimeBank.entity.Elder;
 import com.yaru.TimeBank.entity.Requirement;
+import com.yaru.TimeBank.service.ElderActivityDTOService;
 import com.yaru.TimeBank.service.ElderRequirementDTOService;
 import com.yaru.TimeBank.service.ElderService;
 import com.yaru.TimeBank.service.RequirementService;
@@ -30,6 +32,8 @@ public class ElderController {
     private RequirementService requirementService;
     @Autowired
     private ElderRequirementDTOService elderRequirementDTOService;
+    @Autowired
+    private ElderActivityDTOService elderActivityDTOService;
 
     /**
      * 老年需求者登录
@@ -201,7 +205,7 @@ public class ElderController {
         requirement.setServiceName(updatedRequirement.getServiceName());
         requirement.setServiceContent(updatedRequirement.getServiceContent());
         requirement.setDurationHours(updatedRequirement.getDurationHours());
-
+        requirement.setLastTime(LocalDateTime.now());
 
         // 更新老人需求表信息
         requirementService.updateById(requirement);
@@ -232,6 +236,35 @@ public class ElderController {
 
         return R.success("成功删除老人需求表信息");
     }
+    /**
+     * 分页展示志愿者活动
+     *
+     * @param page        当前页码
+     * @param pageSize    每页大小
+     * @param id          ID
+     * @param activityName 服务名称
+     * @param volunteerAddress     地址
+     * @param volunteerHours 服务时长
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/activity/page")
+    public R<Page<ActivityDTO>> activityPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String activityName,
+            @RequestParam(required = false) String volunteerAddress,
+            @RequestParam(required = false) String volunteerHours) {
+        log.info("Page = {}, PageSize = {}, id = {}, activityName = {}, volunteerAddress = {}, volunteerHours = {}",
+                page, pageSize, id, activityName, volunteerAddress, volunteerHours);
 
+        // 调用 Service 层方法执行分页查询
+        Page<ActivityDTO> resultPage = elderActivityDTOService.getElderActivityPage(page, pageSize, id,
+                activityName,
+                volunteerAddress, volunteerHours);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
 
 }

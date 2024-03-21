@@ -14,7 +14,7 @@ import org.apache.ibatis.annotations.Select;
 public interface AdminRequirementDTOMapper extends BaseMapper<RequirementDTO> {
     @Select("<script>" +
             "SELECT r.id AS requestId, r.service_name AS serviceName, r.service_content AS serviceContent, " +
-            "e.name AS elderName, e.address AS address, " +
+            "e.name AS elderName, e.address AS elderAddress, " +
             "r.create_time AS createTime, r.last_time AS lastTime, r.duration_hours AS durationHours, " +
             "r.status AS status, COALESCE(v.name, 'null') AS volunteerName " + // 使用COALESCE处理volunteer_name可能为空的情况
             "FROM requirement r " +

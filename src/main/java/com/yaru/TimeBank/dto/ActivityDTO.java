@@ -1,20 +1,32 @@
 package com.yaru.TimeBank.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 
-import java.time.LocalDate;
-
-
-public class AdminActivityDTO {
+public class ActivityDTO {
 
     private Long activityId;
     private String activityName;
     private String activityContent;
     private String volunteerName;
-    private String address;
+    private String volunteerAddress;
     private String activityStatus;
-
+    private String volunteerPhone;
     private Long volunteerHours;
+
+    public String getVolunteerAddress() {
+        return volunteerAddress;
+    }
+
+    public void setVolunteerAddress(String volunteerAddress) {
+        this.volunteerAddress = volunteerAddress;
+    }
+
+    public String getVolunteerPhone() {
+        return volunteerPhone;
+    }
+
+    public void setVolunteerPhone(String volunteerPhone) {
+        this.volunteerPhone = volunteerPhone;
+    }
 
     public Long getActivityId() {
         return activityId;
@@ -46,14 +58,6 @@ public class AdminActivityDTO {
 
     public void setVolunteerName(String volunteerName) {
         this.volunteerName = volunteerName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public String getActivityStatus() {

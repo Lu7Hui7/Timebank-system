@@ -11,9 +11,9 @@ import org.apache.ibatis.annotations.Select;
 public interface ElderRequirementDTOMapper {
     @Select("<script>" +
             "SELECT r.id AS requestId, r.service_name AS serviceName, r.service_content AS serviceContent, " +
-            "e.name AS elderName, e.address AS address, " +
-            "r.create_time AS createTime, r.last_time AS lastTime, r.duration_hours AS durationHours, " +
-            "r.status AS status, COALESCE(v.name, 'null') AS volunteerName " + // 使用COALESCE处理volunteer_name可能为空的情况
+            "e.name AS elderName, e.address AS elderAddress, e.phone AS elderPhone, e.children_phone AS elderChildrenPhone, " +
+            "e.physical AS elderPhysical, r.create_time AS createTime, r.last_time AS lastTime, r.duration_hours AS durationHours, " +
+            "r.status AS status, COALESCE(v.name, 'null') AS volunteerName, v.address AS volunteerAddress, v.phone AS volunteerPhone, v.physical AS volunteerPhysical " + // 使用COALESCE处理volunteer_name可能为空的情况
             "FROM requirement r " +
             "LEFT JOIN elder e ON r.elder_id = e.id " +
             "LEFT JOIN volunteer v ON r.volunteer_id = v.id " +

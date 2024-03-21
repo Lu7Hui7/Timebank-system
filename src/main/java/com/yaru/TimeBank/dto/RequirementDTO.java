@@ -9,23 +9,81 @@ public class RequirementDTO {
     private String serviceName;
     private String serviceContent;
     private String elderName;
-    private String address;
+    private String elderAddress;
+    private String elderPhone;
 
-    private String physical;
+
+    private String elderChildrenPhone;
+    private String elderPhysical;
     private String status;
     private String volunteerName;
+
+    private String volunteerAddress;
+    private String volunteerPhone;
+
+    public String getVolunteerPhysical() {
+        return volunteerPhysical;
+    }
+
+    public void setVolunteerPhysical(String volunteerPhysical) {
+        this.volunteerPhysical = volunteerPhysical;
+    }
+
+    private String volunteerPhysical;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate createTime;
 
     private LocalDate lastTime;
     private Long durationHours;
 
-    public String getPhysical() {
-        return physical;
+
+    public String getElderAddress() {
+        return elderAddress;
     }
 
-    public void setPhysical(String physical) {
-        this.physical = physical;
+    public void setElderAddress(String elderAddress) {
+        this.elderAddress = elderAddress;
+    }
+
+    public String getElderPhone() {
+        return elderPhone;
+    }
+
+    public void setElderPhone(String elderPhone) {
+        this.elderPhone = elderPhone;
+    }
+
+    public String getElderChildrenPhone() {
+        return elderChildrenPhone;
+    }
+
+    public void setElderChildrenPhone(String elderChildrenPhone) {
+        this.elderChildrenPhone = elderChildrenPhone;
+    }
+
+    public String getElderPhysical() {
+        return elderPhysical;
+    }
+
+    public void setElderPhysical(String elderPhysical) {
+        this.elderPhysical = elderPhysical;
+    }
+
+    public String getVolunteerAddress() {
+        return volunteerAddress;
+    }
+
+    public void setVolunteerAddress(String volunteerAddress) {
+        this.volunteerAddress = volunteerAddress;
+    }
+
+    public String getVolunteerPhone() {
+        return volunteerPhone;
+    }
+
+    public void setVolunteerPhone(String volunteerPhone) {
+        this.volunteerPhone = volunteerPhone;
     }
 
     public String getVolunteerName() {
@@ -38,13 +96,7 @@ public class RequirementDTO {
 
 
 
-    public String getAddress() {
-        return address;
-    }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
 
 
 
