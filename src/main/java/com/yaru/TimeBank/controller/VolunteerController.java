@@ -3,16 +3,24 @@ package com.yaru.TimeBank.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.yaru.TimeBank.common.R;
+import com.yaru.TimeBank.dto.ActivityDTO;
+import com.yaru.TimeBank.dto.RequirementDTO;
+import com.yaru.TimeBank.entity.Activity;
 import com.yaru.TimeBank.entity.Elder;
+import com.yaru.TimeBank.entity.Requirement;
 import com.yaru.TimeBank.entity.Volunteer;
+import com.yaru.TimeBank.service.ActivityService;
+import com.yaru.TimeBank.service.VolunteerActivityDTOService;
 import com.yaru.TimeBank.service.VolunteerService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestController
@@ -21,6 +29,11 @@ public class VolunteerController {
 
     @Autowired
     private VolunteerService volunteerService;
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private VolunteerActivityDTOService volunteerActivityDTOService;
+
     /**
      * 志愿者登录
      * @param request
@@ -109,4 +122,108 @@ public class VolunteerController {
         return R.success("志愿者信息已更新");
     }
 
+    /**
+     * 创建需求
+     *
+     * @param volunteerId     志愿者ID
+     * @param activity      活动对象
+     * @return             创建需求结果
+     */
+    @PostMapping("/activity/upload")
+    public R<String> createRequirement(
+            @RequestParam Long volunteerId ,
+            @RequestBody Activity activity) {
+        log.info("volunteerId={} requirement = {}", volunteerId , activity.toString());
+
+        activity.setActivityStatus("待审核");
+
+        // 设置老人ID
+        activity.setVolunteerId(volunteerId);
+
+        // 保存需求到数据库
+        activityService.save(activity);
+
+        return R.success("志愿者成功发布活动!");
+    }
+    /**
+     * 分页展示志愿者历史活动
+     *
+     * @param page        当前页码
+     * @param pageSize    每页大小
+     * @param volunteerId    志愿者ID
+     * @param activityName 服务名称
+     * @param address     地址
+     * @param volunteerHours 服务时长
+     * @param id          ID
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/activity/page")
+    public R<Page<ActivityDTO>> volunteerActivityPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) int volunteerId,
+            @RequestParam(required = false) String activityName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String volunteerHours,
+            @RequestParam(required = false) String id) {
+        log.info("Page = {}, PageSize = {}, volunteerId = {}, activityName = {}, address = {}, volunteerHours = {}, id = {}",
+                page, pageSize, volunteerId, activityName, address, volunteerHours, id);
+
+        // 调用 Service 层方法执行分页查询
+        Page<ActivityDTO> resultPage = volunteerActivityDTOService.getVolunteerActivityPage(page, pageSize,
+                volunteerId, activityName, address, volunteerHours, id);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
+    /**
+     * 根据请求体中的参数，修改老人需求表的信息
+     * @param id 老人需求表的ID
+     * @RequestBody updatedActivity 修改后的志愿者活动表信息
+     * @return 返回操作结果
+     */
+    @Transactional
+    @PutMapping("/activity/update")
+    public R<String> reviewRequirementStatus(@RequestParam("id") int id, @RequestBody(required = false) Activity updatedActivity) {
+        // 根据ID查询老人需求表信息
+        Activity activity = activityService.getById(id);
+        if (activity == null) {
+            // 如果找不到对应ID的老人需求表，返回错误信息
+            return R.error("找不到对应ID的志愿者活动表");
+        }
+
+        // 更新审核状态为“审核通过”
+        activity.setActivityName(updatedActivity.getActivityName());
+        activity.setActivityContent(updatedActivity.getActivityContent());
+        activity.setVolunteerHours(updatedActivity.getVolunteerHours());
+
+        // 更新老人需求表信息
+        activityService.updateById(activity);
+
+        return R.success("志愿者活动表已更新");
+    }
+    /**
+     * 根据ID删除老人需求表信息
+     * @param id 老人需求表的ID
+     * @return 返回操作结果
+     */
+    @Transactional
+    @DeleteMapping("/activity/delete")
+    public R<String> deleteRequirementById(@RequestParam("id") int id) {
+        // 检查是否存在对应ID的老人需求表信息
+        Activity existingActivity = activityService.getById(id);
+        if (existingActivity == null) {
+            // 如果找不到对应ID的老人需求表，返回错误信息
+            return R.error("找不到对应ID的志愿者申请表");
+        }
+
+        // 根据ID删除老人需求表信息
+        boolean deleted = activityService.removeById(id);
+        if (!deleted) {
+            // 如果删除失败，返回错误信息
+            return R.error("删除志愿者需求表时出错");
+        }
+
+        return R.success("成功删除老人需求表信息");
+    }
 }
