@@ -133,7 +133,7 @@ public class ElderController {
      */
     @PostMapping("/request/upload")
     public R<String> createRequirement(
-            @RequestParam Long elderId,
+            @RequestParam int elderId,
             @RequestBody Requirement requirement) {
         log.info("elderId={} requirement = {}", elderId, requirement.toString());
 
