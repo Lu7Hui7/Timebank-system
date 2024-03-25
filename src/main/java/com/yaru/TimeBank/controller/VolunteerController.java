@@ -179,30 +179,35 @@ public class VolunteerController {
         return R.success(resultPage);
     }
     /**
-     * 根据请求体中的参数，修改老人需求表的信息
+     * 根据请求体中的参数，修改志愿者活动表信息
      * @param id 老人需求表的ID
      * @RequestBody updatedActivity 修改后的志愿者活动表信息
      * @return 返回操作结果
      */
     @Transactional
     @PutMapping("/activity/update")
-    public R<String> reviewRequirementStatus(@RequestParam("id") int id, @RequestBody(required = false) Activity updatedActivity) {
+    public R<String> updateActivity(@RequestParam("id") int id, @RequestBody(required = false) Activity updatedActivity) {
         // 根据ID查询老人需求表信息
         Activity activity = activityService.getById(id);
         if (activity == null) {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的志愿者活动表");
         }
+        if(activity.getActivityStatus().equals("审核通过") || activity.getActivityStatus().equals("待审核")){
+            // 更新审核状态为“审核通过”
+            activity.setActivityName(updatedActivity.getActivityName());
+            activity.setActivityContent(updatedActivity.getActivityContent());
+            activity.setVolunteerHours(updatedActivity.getVolunteerHours());
 
-        // 更新审核状态为“审核通过”
-        activity.setActivityName(updatedActivity.getActivityName());
-        activity.setActivityContent(updatedActivity.getActivityContent());
-        activity.setVolunteerHours(updatedActivity.getVolunteerHours());
+            // 更新老人需求表信息
+            activityService.updateById(activity);
 
-        // 更新老人需求表信息
-        activityService.updateById(activity);
+            return R.success("志愿者活动表已更新");
+        }
+        else{
+            return R.error("志愿者活动表状态不符合更改权限，无法进行更改操作");
+        }
 
-        return R.success("志愿者活动表已更新");
     }
     /**
      * 根据ID删除志愿者活动
@@ -218,15 +223,19 @@ public class VolunteerController {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的志愿者申请表");
         }
-
-        // 根据ID删除老人需求表信息
-        boolean deleted = activityService.removeById(id);
-        if (!deleted) {
-            // 如果删除失败，返回错误信息
-            return R.error("删除志愿者需求表时出错");
+        boolean deleted = false;
+        if(existingActivity.getActivityStatus().equals("审核通过") || existingActivity.getActivityStatus().equals("待审核")){
+            // 根据ID删除老人需求表信息
+            deleted = activityService.removeById(id);
+            if (!deleted) {
+                // 如果删除失败，返回错误信息
+                return R.error("删除志愿者活动表时出错");
+            }
+            return R.success("成功删除志愿者活动表信息");
         }
-
-        return R.success("成功删除老人需求表信息");
+        else{
+            return R.error("该活动状态不符合删除操作权限");
+        }
     }
 
     /**

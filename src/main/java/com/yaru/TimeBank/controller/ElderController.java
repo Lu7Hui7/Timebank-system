@@ -200,17 +200,22 @@ public class ElderController {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的老人需求表");
         }
+        if(requirement.getStatus().equals("审核通过") || requirement.getStatus().equals("待审核")){
+            // 更新审核状态为“审核通过”
+            requirement.setServiceName(updatedRequirement.getServiceName());
+            requirement.setServiceContent(updatedRequirement.getServiceContent());
+            requirement.setDurationHours(updatedRequirement.getDurationHours());
+            requirement.setLastTime(LocalDateTime.now());
 
-        // 更新审核状态为“审核通过”
-        requirement.setServiceName(updatedRequirement.getServiceName());
-        requirement.setServiceContent(updatedRequirement.getServiceContent());
-        requirement.setDurationHours(updatedRequirement.getDurationHours());
-        requirement.setLastTime(LocalDateTime.now());
+            // 更新老人需求表信息
+            requirementService.updateById(requirement);
 
-        // 更新老人需求表信息
-        requirementService.updateById(requirement);
+            return R.success("老人需求表信息已更新");
+        }
+        else{
+            return R.error("需求表状态不符合更改权限，无法进行更改操作");
+        }
 
-        return R.success("老人需求表信息已更新");
     }
     /**
      * 根据ID删除老人需求表信息
@@ -226,15 +231,20 @@ public class ElderController {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的老人需求表");
         }
-
-        // 根据ID删除老人需求表信息
-        boolean deleted = requirementService.removeById(id);
-        if (!deleted) {
-            // 如果删除失败，返回错误信息
-            return R.error("删除老人需求表信息时出错");
+        if(existingRequirement.getStatus().equals("审核通过") || existingRequirement.getStatus().equals("待审核")){
+            // 根据ID删除老人需求表信息
+            boolean deleted = requirementService.removeById(id);
+            if (!deleted) {
+                // 如果删除失败，返回错误信息
+                return R.error("删除老人需求表信息时出错");
+            }
+            else {
+                return R.success("成功删除老人需求表信息");
+            }
         }
-
-        return R.success("成功删除老人需求表信息");
+        else{
+            return R.success("需求表状态不符合删除操作权限，无法进行删除");
+        }
     }
     /**
      * 分页展示志愿者活动
