@@ -243,7 +243,7 @@ public class ElderController {
             }
         }
         else{
-            return R.success("需求表状态不符合删除操作权限，无法进行删除");
+            return R.error("需求表状态不符合删除操作权限，无法进行删除");
         }
     }
     /**
