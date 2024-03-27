@@ -185,38 +185,38 @@ public class ElderController {
         return R.success(resultPage);
     }
 
-    /**
-     * 根据请求体中的参数，修改老人需求表的信息
-     * @param id 老人需求表的ID
-     * @RequestBody updatedRequirement 修改后的老人需求表信息
-     * @return 返回操作结果
-     */
-    @Transactional
-    @PutMapping("/request/update")
-    public R<String> reviewRequirementStatus(@RequestParam("id") int id, @RequestBody(required = false) Requirement updatedRequirement) {
-        // 根据ID查询老人需求表信息
-        Requirement requirement = requirementService.getById(id);
-        if (requirement == null) {
-            // 如果找不到对应ID的老人需求表，返回错误信息
-            return R.error("找不到对应ID的老人需求表");
-        }
-        if(requirement.getStatus().equals("审核通过") || requirement.getStatus().equals("待审核")){
-            // 更新审核状态为“审核通过”
-            requirement.setServiceName(updatedRequirement.getServiceName());
-            requirement.setServiceContent(updatedRequirement.getServiceContent());
-            requirement.setDurationHours(updatedRequirement.getDurationHours());
-            requirement.setLastTime(LocalDateTime.now());
+        /**
+         * 根据请求体中的参数，修改老人需求表的信息
+         * @param id 老人需求表的ID
+         * @RequestBody updatedRequirement 修改后的老人需求表信息
+         * @return 返回操作结果
+         */
+        @Transactional
+        @PutMapping("/request/update")
+        public R<String> updateRequirement(@RequestParam("id") int id, @RequestBody(required = false) Requirement updatedRequirement) {
+            // 根据ID查询老人需求表信息
+            Requirement requirement = requirementService.getById(id);
+            if (requirement == null) {
+                // 如果找不到对应ID的老人需求表，返回错误信息
+                return R.error("找不到对应ID的老人需求表");
+            }
+            if(requirement.getStatus().equals("审核通过") || requirement.getStatus().equals("待审核")){
+                // 更新审核状态为“审核通过”
+                requirement.setServiceName(updatedRequirement.getServiceName());
+                requirement.setServiceContent(updatedRequirement.getServiceContent());
+                requirement.setDurationHours(updatedRequirement.getDurationHours());
+                requirement.setLastTime(LocalDateTime.now());
 
-            // 更新老人需求表信息
-            requirementService.updateById(requirement);
+                // 更新老人需求表信息
+                requirementService.updateById(requirement);
 
-            return R.success("老人需求表信息已更新");
-        }
-        else{
-            return R.error("需求表状态不符合更改权限，无法进行更改操作");
-        }
+                return R.success("老人需求表信息已更新");
+            }
+            else{
+                return R.error("需求表状态不符合更改权限，无法进行更改操作");
+            }
 
-    }
+        }
     /**
      * 根据ID删除老人需求表信息
      * @param id 老人需求表的ID

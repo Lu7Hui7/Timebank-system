@@ -6,6 +6,7 @@ import com.yaru.TimeBank.common.R;
 import com.yaru.TimeBank.dto.ActivityDTO;
 import com.yaru.TimeBank.dto.RequirementDTO;
 import com.yaru.TimeBank.entity.*;
+import com.yaru.TimeBank.mapper.AdminReviewedActivityMappper;
 import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -36,6 +37,10 @@ public class AdminController {
     private AdminActivityService adminActivityService;
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private AdminReviewedRequirementService adminReviewedRequirementService;
+    @Autowired
+    private AdminReviewedActivityService adminReviewedActivityService;
     /**
      * 管理员登录
      * @param request
@@ -311,6 +316,36 @@ public class AdminController {
         return R.success(resultPage);
     }
 
+    /**
+     * 分页查询已审核老年需求者需求信息
+     *
+     * @param page        当前页码
+     * @param pageSize    每页大小
+     * @param serviceName 服务名称
+     * @param address     地址
+     * @param durationHours 服务时长
+     * @param id          ID
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/request/reviewed")
+    public R<Page<RequirementDTO>> elderReviewedRequestPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String serviceName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String durationHours,
+            @RequestParam(required = false) String id) {
+        log.info("Page = {}, PageSize = {}, ServiceName = {}, Address = {}, DurationHours = {}, Id = {}",
+                page, pageSize, serviceName, address, durationHours, id);
+
+        // 调用 Service 层方法执行分页查询
+        Page<RequirementDTO> resultPage = adminReviewedRequirementService.getReviewedRequirementPage(page, pageSize,
+                serviceName, address,
+                durationHours, id);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
 
     /**
      * 根据请求体中的参数，修改老人需求表的审核状态
@@ -387,5 +422,31 @@ public class AdminController {
 
         return R.success("活动表的审核状态已更新");
     }
+    /**
+     * 分页查询审核通过志愿者活动信息
+     * @param page 当前页码
+     * @param pageSize 每页大小
+     * @param id 活动ID（模糊查询）
+     * @param activityName 活动名称（模糊查询）
+     * @param address 活动地址（模糊查询）
+     * @param volunteerHours 志愿时长（模糊查询）
+     * @return 返回分页查询结果
+     */
+    @GetMapping("/activity/reviewed")
+    public R<Page<ActivityDTO>> volunteerReviewedActivityPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String activityName,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String volunteerHours) {
+        log.info("Page = {}, PageSize = {}, ID = {}, ActivityName = {}, Address = {}, VolunteerHours = {}",
+                page, pageSize, id, activityName, address, volunteerHours);
 
+        // 调用 Service 层方法执行分页查询
+        Page<ActivityDTO> resultPage = adminReviewedActivityService.getReviewedActivityPage(page, pageSize, id, activityName, address, volunteerHours);
+
+        // 返回分页查询结果
+        return R.success(resultPage);
+    }
 }
