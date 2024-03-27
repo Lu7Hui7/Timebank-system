@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -35,6 +36,7 @@ public class VolunteerController {
     private VolunteerRequirementDTOService volunteerRequirementDTOService;
     @Autowired
     private RequirementService requirementService;
+    private HttpSession session;
 
     /**
      * 志愿者登录
@@ -65,20 +67,24 @@ public class VolunteerController {
         }
         //4、密码比对，如果一致
         if(v.getPassword().equals(password)){
-            //6、登录成功，将员工id存入Session并返回登录成功结果
-            request.getSession().setAttribute("volunteers",v.getId());
+
+            // 获取当前请求的HttpSession对象
+            session = request.getSession();
+
+            session.setAttribute("volunteer",v.getId());
+            // 设置session的最大不活动间隔为30分钟（30 * 60 秒）
+            session.setMaxInactiveInterval(30 * 60);
         }
         return R.success(v);
     }
     /**
      * 志愿者退出
-     * @param request
      * @return
      */
     @PostMapping("/logout")
-    public R<String> logout(HttpServletRequest request){
+    public R<String> logout(){
         //清理Session中保存的当前登录员工的id
-        request.getSession().removeAttribute("volunteer");
+        session.removeAttribute("volunteer");
         return R.success("退出成功");
     }
 
@@ -127,26 +133,36 @@ public class VolunteerController {
     /**
      * 创建需求
      *
-     * @param volunteerId     志愿者ID
-     * @param activity      活动对象
-     * @return             创建需求结果
+     * @param activity     活动对象
+     * @return 创建需求结果
      */
     @PostMapping("/activity/upload")
-    public R<String> createRequirement(
-            @RequestParam Long volunteerId ,
+    public R<String> createActivity(
             @RequestBody Activity activity) {
-        log.info("volunteerId={} requirement = {}", volunteerId , activity.toString());
+        // 从Session中获取志愿者ID
+        Long volunteerId = (Long) session.getAttribute("volunteer");
+        if (volunteerId == null) {
+            return R.error("未登录或登录已失效，请重新登录！");
+        }
 
-        activity.setActivityStatus("待审核");
+        try {
+            log.info("volunteerId={} requirement = {}", volunteerId, activity.toString());
 
-        // 设置老人ID
-        activity.setVolunteerId(volunteerId);
+            activity.setActivityStatus("待审核");
 
-        // 保存需求到数据库
-        activityService.save(activity);
+            // 设置志愿者ID
+            activity.setVolunteerId(volunteerId);
 
-        return R.success("志愿者成功发布活动!");
+            // 保存需求到数据库
+            activityService.save(activity);
+
+            return R.success("志愿者成功发布活动!");
+        } catch (Exception e) {
+            log.error("活动创建失败：{}", e.getMessage());
+            return R.error("活动创建失败，请稍后重试！");
+        }
     }
+
     /**
      * 分页展示志愿者历史活动
      *
@@ -170,7 +186,11 @@ public class VolunteerController {
             @RequestParam(required = false) String id) {
         log.info("Page = {}, PageSize = {}, volunteerId = {}, activityName = {}, address = {}, volunteerHours = {}, id = {}",
                 page, pageSize, volunteerId, activityName, address, volunteerHours, id);
-
+        Long vId = (Long) session.getAttribute("volunteer");
+        if (vId == null) {
+            return R.error("未登录或登录已失效，请重新登录！");
+        }
+        volunteerId = Math.toIntExact(vId);
         // 调用 Service 层方法执行分页查询
         Page<ActivityDTO> resultPage = volunteerActivityDTOService.getVolunteerActivityPage(page, pageSize,
                 volunteerId, activityName, address, volunteerHours, id);
@@ -180,13 +200,13 @@ public class VolunteerController {
     }
     /**
      * 根据请求体中的参数，修改志愿者活动表信息
-     * @param id 老人需求表的ID
      * @RequestBody updatedActivity 修改后的志愿者活动表信息
      * @return 返回操作结果
      */
     @Transactional
     @PutMapping("/activity/update")
-    public R<String> updateActivity(@RequestParam("id") int id, @RequestBody(required = false) Activity updatedActivity) {
+    public R<String> updateActivity( @RequestBody(required = false) Activity updatedActivity) {
+        Long id = (Long)session.getAttribute("volunteer");
         // 根据ID查询老人需求表信息
         Activity activity = activityService.getById(id);
         if (activity == null) {
@@ -272,22 +292,20 @@ public class VolunteerController {
     /**
      * 响应老人需求
      * @param requirementId 老人需求表的ID
-     * @param volunteerId 志愿者ID
      * @return 返回操作结果
      */
     @Transactional
     @PutMapping("/response/request")
-    public R<String> responseRequirement(@RequestParam("requirementId") int requirementId,
-                                         @RequestParam("activityId") int volunteerId) {
+    public R<String> responseRequirement(@RequestParam("requirementId") int requirementId) {
         // 根据ID查询老人需求表信息
         Requirement requirement = requirementService.getById(requirementId);
         if (requirement == null) {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的老人需求表");
         }
-
+        Long vid = (Long)session.getAttribute("volunteer");
         // 将活动ID设置到老人需求表对象中
-        requirement.setVolunteerId(volunteerId);
+        requirement.setVolunteerId(Math.toIntExact(vid));
         requirement.setStatus("进行中");
 
         // 更新老人需求表信息

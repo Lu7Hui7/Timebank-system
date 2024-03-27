@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -34,6 +35,7 @@ public class ElderController {
     private ElderRequirementDTOService elderRequirementDTOService;
     @Autowired
     private ElderActivityDTOService elderActivityDTOService;
+    private HttpSession session;
 
     /**
      * 老年需求者登录
@@ -65,7 +67,7 @@ public class ElderController {
         //4、密码比对，如果一致
         if(e.getPassword().equals(password)){
             //6、登录成功，将员工id存入Session并返回登录成功结果
-            request.getSession().setAttribute("volunteers",e.getId());
+            session.setAttribute("volunteers",e.getId());
         }
         return R.success(e);
     }
@@ -77,7 +79,7 @@ public class ElderController {
     @PostMapping("/logout")
     public R<String> logout(HttpServletRequest request){
         //清理Session中保存的当前登录员工的id
-        request.getSession().removeAttribute("elder");
+        session.removeAttribute("elder");
         return R.success("退出成功");
     }
 
@@ -97,16 +99,15 @@ public class ElderController {
     }
     /**
      * 根据id修改老年需求者的用户信息
-     * @param id 老年需求者ID
      * @param updatedUserInfo 更新后的老年需求者用户信息
      * @return 返回操作结果
      */
     @PutMapping("/update")
-    public R<String> updateElderUserInfo(@RequestParam("id") Long id, @RequestBody(required = false) Elder updatedUserInfo) {
+    public R<String> updateElderUserInfo(@RequestBody(required = false) Elder updatedUserInfo) {
         if (updatedUserInfo == null) {
             return R.error("请求体为空");
         }
-
+        Long id = (Long)session.getAttribute("elder");
         // 根据ID查询老年需求者信息
         Elder elder = elderService.getById(id);
         if (elder == null) {
@@ -127,24 +128,22 @@ public class ElderController {
     /**
      * 创建需求
      *
-     * @param elderId      老人ID
      * @param requirement  需求对象
      * @return             创建需求结果
      */
     @PostMapping("/request/upload")
     public R<String> createRequirement(
-            @RequestParam int elderId,
             @RequestBody Requirement requirement) {
-        log.info("elderId={} requirement = {}", elderId, requirement.toString());
+        log.info("elderId={} requirement = {}",  requirement.toString());
 
-
+        Long elderId = (Long)session.getAttribute("elder");
         requirement.setCreateTime(LocalDateTime.now());
         requirement.setLastTime(LocalDateTime.now());
 
         requirement.setStatus("待审核");
 
         // 设置老人ID
-        requirement.setElderId(elderId);
+        requirement.setElderId(elderId.intValue());
 
         // 保存需求到数据库
         requirementService.save(requirement);
@@ -167,17 +166,16 @@ public class ElderController {
     public R<Page<RequirementDTO>> elderRequestPage(
             @RequestParam int page,
             @RequestParam int pageSize,
-            @RequestParam(required = false) int elderId,
             @RequestParam(required = false) String serviceName,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String durationHours,
             @RequestParam(required = false) String id) {
         log.info("Page = {}, PageSize = {},elderId = {}, ServiceName = {}, Address = {}, DurationHours = {}, Id = {}",
-                page, pageSize,elderId, serviceName, address, durationHours, id);
-
+                page, pageSize, serviceName, address, durationHours, id);
+        Long elderId = (Long)session.getAttribute("elder");
         // 调用 Service 层方法执行分页查询
         Page<RequirementDTO> resultPage = elderRequirementDTOService.getElderRequirementPage(page, pageSize,
-                elderId,
+                elderId.intValue(),
                 serviceName, address,
                 durationHours, id);
 
