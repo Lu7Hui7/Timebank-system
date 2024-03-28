@@ -6,20 +6,19 @@ import com.yaru.TimeBank.common.R;
 import com.yaru.TimeBank.dto.ActivityDTO;
 import com.yaru.TimeBank.dto.RequirementDTO;
 import com.yaru.TimeBank.entity.Activity;
-import com.yaru.TimeBank.entity.Elder;
 import com.yaru.TimeBank.entity.Requirement;
 import com.yaru.TimeBank.entity.Volunteer;
 import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.time.LocalDateTime;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -104,21 +103,26 @@ public class VolunteerController {
     }
     /**
      * 根据id修改志愿者者的用户信息
-     * @param id 志愿者ID
      * @param updatedUserInfo 更新后的志愿者者用户信息
      * @return 返回操作结果
      */
     @PutMapping("/update")
-    public R<String> updateVolunteerUserInfo(@RequestParam("id") Long id, @RequestBody(required = false) Volunteer updatedUserInfo) {
+    public R<String> updateVolunteerUserInfo( @RequestBody(required = false) Volunteer updatedUserInfo) {
         if (updatedUserInfo == null) {
             return R.error("请求体为空");
         }
+        // 从Session中获取志愿者ID
+        Long volunteerId = (Long) session.getAttribute("volunteer");
+        if (volunteerId == null) {
+            return R.error("未登录或登录已失效，请重新登录！");
+        }
 
         // 根据ID查询老年需求者信息
-        Volunteer volunteer = volunteerService.getById(id);
+        Volunteer volunteer = volunteerService.getById(volunteerId);
         if (volunteer == null) {
             // 如果找不到对应ID的老年需求者，返回错误信息
             return R.error("找不到对应ID的志愿者");
+
         }
 
         // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
@@ -168,7 +172,6 @@ public class VolunteerController {
      *
      * @param page        当前页码
      * @param pageSize    每页大小
-     * @param volunteerId    志愿者ID
      * @param activityName 服务名称
      * @param address     地址
      * @param volunteerHours 服务时长
@@ -179,18 +182,16 @@ public class VolunteerController {
     public R<Page<ActivityDTO>> volunteerActivityPage(
             @RequestParam int page,
             @RequestParam int pageSize,
-            @RequestParam(required = false) int volunteerId,
             @RequestParam(required = false) String activityName,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String volunteerHours,
             @RequestParam(required = false) String id) {
-        log.info("Page = {}, PageSize = {}, volunteerId = {}, activityName = {}, address = {}, volunteerHours = {}, id = {}",
-                page, pageSize, volunteerId, activityName, address, volunteerHours, id);
-        Long vId = (Long) session.getAttribute("volunteer");
-        if (vId == null) {
+        log.info("Page = {}, PageSize = {},  activityName = {}, address = {}, volunteerHours = {}, id = {}",
+                page, pageSize,  activityName, address, volunteerHours, id);
+        Long volunteerId = (Long) session.getAttribute("volunteer");
+        if (volunteerId == null) {
             return R.error("未登录或登录已失效，请重新登录！");
         }
-        volunteerId = Math.toIntExact(vId);
         // 调用 Service 层方法执行分页查询
         Page<ActivityDTO> resultPage = volunteerActivityDTOService.getVolunteerActivityPage(page, pageSize,
                 volunteerId, activityName, address, volunteerHours, id);
@@ -200,15 +201,17 @@ public class VolunteerController {
     }
     /**
      * 根据请求体中的参数，修改志愿者活动表信息
+     * @param id 志愿者活动的ID
      * @RequestBody updatedActivity 修改后的志愿者活动表信息
      * @return 返回操作结果
      */
     @Transactional
     @PutMapping("/activity/update")
-    public R<String> updateActivity( @RequestBody(required = false) Activity updatedActivity) {
-        Long id = (Long)session.getAttribute("volunteer");
+    public R<String> updateActivity(@RequestParam(required = false) int id, @RequestBody(required = false) Activity updatedActivity) {
+
         // 根据ID查询老人需求表信息
         Activity activity = activityService.getById(id);
+
         if (activity == null) {
             // 如果找不到对应ID的老人需求表，返回错误信息
             return R.error("找不到对应ID的志愿者活动表");
@@ -261,34 +264,34 @@ public class VolunteerController {
     /**
      * 分页展示老人历史需求
      *
-     * @param page        当前页码
-     * @param pageSize    每页大小
-     * @param serviceName 服务名称
-     * @param address     地址
+     * @param page          当前页码
+     * @param pageSize      每页大小
+     * @param serviceName   服务名称
+     * @param address       地址
      * @param durationHours 服务时长
-     * @param id          ID
+     * @param id            ID
      * @return 返回分页查询结果
      */
     @GetMapping("/request/page")
-    public R<Page<RequirementDTO>> elderRequestPage(
-            @RequestParam int page,
-            @RequestParam int pageSize,
+    public R<Page<RequirementDTO>> elderAppRequestPage(
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer pageSize,
             @RequestParam(required = false) String serviceName,
             @RequestParam(required = false) String address,
             @RequestParam(required = false) String durationHours,
             @RequestParam(required = false) String id) {
+
         log.info("Page = {}, PageSize = {} Id = {} ServiceName = {}, Address = {}, DurationHours = {}, ",
                 page, pageSize, id, serviceName, address, durationHours);
 
         // 调用 Service 层方法执行分页查询
         Page<RequirementDTO> resultPage = volunteerRequirementDTOService.volunteerGetRequirementPage(page, pageSize,
-                 id,
-                serviceName, address,
-                durationHours);
+                id, serviceName, address, durationHours);
 
         // 返回分页查询结果
         return R.success(resultPage);
     }
+
     /**
      * 响应老人需求
      * @param requirementId 老人需求表的ID
@@ -305,7 +308,7 @@ public class VolunteerController {
         }
         Long vid = (Long)session.getAttribute("volunteer");
         // 将活动ID设置到老人需求表对象中
-        requirement.setVolunteerId(Math.toIntExact(vid));
+        requirement.setVolunteerId(vid);
         requirement.setStatus("进行中");
 
         // 更新老人需求表信息

@@ -16,7 +16,7 @@ public class VolunteerActivityDTOServiceImpl implements VolunteerActivityDTOServ
     private VolunteerActivityDTOMapper volunteerActivityDTOMapper;
     @Override
     public Page<ActivityDTO> getVolunteerActivityPage(int page, int pageSize,
-                                                      int volunteerId,
+                                                      Long volunteerId,
                                                       String activityName,
                                                       String address,
                                                       String volunteerHours,

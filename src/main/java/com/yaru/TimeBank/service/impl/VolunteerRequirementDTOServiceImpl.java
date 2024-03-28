@@ -8,6 +8,8 @@ import com.yaru.TimeBank.service.VolunteerRequirementDTOService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class VolunteerRequirementDTOServiceImpl implements VolunteerRequirementDTOService {
 
@@ -23,4 +25,6 @@ public class VolunteerRequirementDTOServiceImpl implements VolunteerRequirementD
 
         return (Page<RequirementDTO>) resultPage;
     }
+
+
 }

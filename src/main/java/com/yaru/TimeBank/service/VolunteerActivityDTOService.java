@@ -6,7 +6,7 @@ import com.yaru.TimeBank.dto.RequirementDTO;
 
 public interface VolunteerActivityDTOService {
     Page<ActivityDTO> getVolunteerActivityPage(int page, int pageSize,
-                                              int volunteerId,
+                                              Long volunteerId,
                                               String activityName,
                                               String address,
                                               String volunteerHours,

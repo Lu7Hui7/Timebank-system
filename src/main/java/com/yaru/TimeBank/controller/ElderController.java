@@ -143,7 +143,7 @@ public class ElderController {
         requirement.setStatus("待审核");
 
         // 设置老人ID
-        requirement.setElderId(elderId.intValue());
+        requirement.setElderId(elderId);
 
         // 保存需求到数据库
         requirementService.save(requirement);
@@ -155,7 +155,6 @@ public class ElderController {
      *
      * @param page        当前页码
      * @param pageSize    每页大小
-     * @param elderId    老人ID
      * @param serviceName 服务名称
      * @param address     地址
      * @param durationHours 服务时长

@@ -17,7 +17,7 @@ public interface VolunteerActivityDTOMapper extends BaseMapper<ActivityDTO> {
             "INNER JOIN volunteer v ON a.volunteer_id = v.id " +
             "WHERE 1=1 " +
             "<if test='volunteerId != null'>" +
-            "   AND a.id = #{volunteerId} " + // 添加志愿者ID的条件
+            "   AND a.volunteer_id = #{volunteerId} " + // 添加志愿者ID的条件
             "</if>" +
             "<if test='activityName != null and activityName != \"\"'>" +
             "   AND a.activity_name LIKE CONCAT('%', #{activityName}, '%')" +
@@ -33,7 +33,7 @@ public interface VolunteerActivityDTOMapper extends BaseMapper<ActivityDTO> {
             "</if>" +
             "</script>")
     IPage<ActivityDTO> getVolunteerActivityPage(Page<?> page,
-                                       @Param("volunteerId") int volunteerId, // 添加老人ID参数
+                                       @Param("volunteerId") Long volunteerId,
                                        @Param("activityName") String activityName,
                                        @Param("address") String address,
                                        @Param("volunteerHours") String volunteerHours,

@@ -25,12 +25,12 @@ public class Requirement {
     // 使用 @ManyToOne 注解表示与 Elder 实体类的多对一关系，并指定关联字段
     @ManyToOne
     @JoinColumn(name = "elder_id", referencedColumnName = "id")
-    private Integer elderId;
+    private Long elderId;
 
     // 使用 @ManyToOne 注解表示与 Volunteer 实体类的多对一关系，并指定关联字段
     @ManyToOne
     @JoinColumn(name = "volunteer_id", referencedColumnName = "id")
-    private Integer volunteerId;
+    private Long volunteerId;
 
     private LocalDateTime lastTime;
 
