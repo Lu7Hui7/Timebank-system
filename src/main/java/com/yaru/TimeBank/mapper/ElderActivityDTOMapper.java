@@ -22,7 +22,7 @@ public interface ElderActivityDTOMapper extends BaseMapper<ActivityDTO> {
             "<if test='name != null and name != \"\"'>" +
             "   AND a.activity_name LIKE CONCAT('%', #{name}, '%')" +
             "</if>" +
-            "<if test='address != null and address != \"\"'>" +
+            "<if test='volunteerAddress != null and volunteerAddress != \"\"'>" +
             "   AND v.address LIKE CONCAT('%', #{volunteerAddress}, '%')" +
             "</if>" +
             "<if test='volunteerHours != null and volunteerHours != \"\"'>" +
@@ -32,6 +32,6 @@ public interface ElderActivityDTOMapper extends BaseMapper<ActivityDTO> {
     IPage<ActivityDTO> getActivityPage(Page<?> page,
                                             @Param("id") String id,
                                             @Param("name") String name,
-                                            @Param("address") String volunteerAddress,
+                                            @Param("volunteerAddress") String volunteerAddress,
                                             @Param("volunteerHours") String volunteerHours);
 }

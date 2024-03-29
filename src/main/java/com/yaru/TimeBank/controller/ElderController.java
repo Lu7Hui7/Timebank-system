@@ -67,7 +67,12 @@ public class ElderController {
         //4、密码比对，如果一致
         if(e.getPassword().equals(password)){
             //6、登录成功，将员工id存入Session并返回登录成功结果
-            session.setAttribute("volunteers",e.getId());
+            // 获取当前请求的HttpSession对象
+            session = request.getSession();
+
+            session.setAttribute("elder",e.getId());
+            // 设置session的最大不活动间隔为30分钟（30 * 60 秒）
+            session.setMaxInactiveInterval(30 * 60);
         }
         return R.success(e);
     }

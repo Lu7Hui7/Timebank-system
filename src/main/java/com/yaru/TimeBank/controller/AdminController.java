@@ -87,16 +87,31 @@ public class AdminController {
         request.getSession().removeAttribute("admin");
         return R.success("退出成功");
     }
+
     /**
      * 老年需求者信息分页查询
-     * @param page
-     * @param pageSize
-     * @param params
-     * @return
+     *
+     * @param page            当前页码
+     * @param pageSize        每页数量
+     * @param id              老年需求者ID（可选）
+     * @param name            老年需求者姓名（可选）
+     * @param address         老年需求者地址（可选）
+     * @param identityNumber  老年需求者身份证号（可选）
+     * @param accountStatus   老年需求者账户状态（可选）
+     * @return 分页结果
      */
     @GetMapping("/elder/page")
-    public R<Page<Elder>> elderPage(int page, int pageSize, @RequestParam(required = false) String[] params) {
-        log.info("page = {}, pageSize = {}, params = {}", page, pageSize, Arrays.toString(params));
+    public R<Page<Elder>> elderPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String identityNumber,
+            @RequestParam(required = false) String accountStatus) {
+
+        log.info("page = {}, pageSize = {}, id = {}, name = {}, address = {}, identityNumber = {}, accountStatus = {}",
+                page, pageSize, id, name, address, identityNumber, accountStatus);
 
         // 构造分页构造器
         Page<Elder> pageInfo = new Page<>(page, pageSize);
@@ -104,28 +119,21 @@ public class AdminController {
         // 构造条件构造器
         LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
 
-        // 如果参数数组不为空，则根据参数数组中的条件添加相应的模糊查询条件
-        if (params != null && params.length > 0) {
-            // 遍历参数数组，解析参数并添加相应的模糊查询条件
-            for (String param : params) {
-                String[] keyValue = param.split("=", 2);
-                if (keyValue.length == 2) {
-                    String key = keyValue[0];
-                    String value = keyValue[1];
-                    // 根据参数的键值对添加模糊查询条件
-                    if ("id".equals(key)) {
-                        queryWrapper.like(Elder::getId, value);
-                    } else if ("name".equals(key)) {
-                        queryWrapper.like(Elder::getName, value);
-                    } else if ("address".equals(key)) {
-                        queryWrapper.like(Elder::getAddress, value);
-                    } else if ("identityNumber".equals(key)) {
-                        queryWrapper.like(Elder::getIdentityNumber, value);
-                    } else if ("accountStatus".equals(key)) {
-                        queryWrapper.like(Elder::getAccountStatus, value);
-                    }
-                }
-            }
+        // 设置条件
+        if (id != null && !id.isEmpty()) {
+            queryWrapper.like(Elder::getId, id);
+        }
+        if (name != null && !name.isEmpty()) {
+            queryWrapper.like(Elder::getName, name);
+        }
+        if (address != null && !address.isEmpty()) {
+            queryWrapper.like(Elder::getAddress, address);
+        }
+        if (identityNumber != null && !identityNumber.isEmpty()) {
+            queryWrapper.like(Elder::getIdentityNumber, identityNumber);
+        }
+        if (accountStatus != null && !accountStatus.isEmpty()) {
+            queryWrapper.like(Elder::getAccountStatus, accountStatus);
         }
 
         // 执行查询
@@ -135,17 +143,31 @@ public class AdminController {
     }
 
 
+
     /**
-     * 志愿者者信息分页查询
-     * @param page
-     * @param pageSize
-     * @param params
-     * @return
+     * 志愿者信息分页查询
+     *
+     * @param page     当前页码
+     * @param pageSize 每页数量
+     * @param id       志愿者ID（可选）
+     * @param name     志愿者姓名（可选）
+     * @param address  志愿者地址（可选）
+     * @param identityNumber 志愿者身份证号（可选）
+     * @param accountStatus  志愿者账户状态（可选）
+     * @return 分页结果
      */
     @GetMapping("/volunteer/page")
-    public R<Page<Volunteer>> volunteerPage(int page, int pageSize,
-                                            @RequestParam(required = false) String[] params) {
-        log.info("page = {}, pageSize = {}, params = {}", page, pageSize, Arrays.toString(params));
+    public R<Page<Volunteer>> volunteerPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String identityNumber,
+            @RequestParam(required = false) String accountStatus) {
+
+        log.info("page = {}, pageSize = {}, id = {}, name = {}, address = {}, identityNumber = {}, accountStatus = {}",
+                page, pageSize, id, name, address, identityNumber, accountStatus);
 
         // 构造分页构造器
         Page<Volunteer> pageInfo = new Page<>(page, pageSize);
@@ -153,27 +175,21 @@ public class AdminController {
         // 构造条件构造器
         LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
 
-        // 如果参数数组不为空，则遍历参数数组，解析参数并添加相应的模糊查询条件
-        if (params != null && params.length > 0) {
-            for (String param : params) {
-                String[] keyValue = param.split("=");
-                if (keyValue.length == 2) {
-                    String key = keyValue[0];
-                    String value = keyValue[1];
-                    // 根据参数的键值对添加模糊查询条件
-                    if ("id".equals(key)) {
-                        queryWrapper.like(Volunteer::getId, value);
-                    } else if ("name".equals(key)) {
-                        queryWrapper.like(Volunteer::getName, value);
-                    } else if ("address".equals(key)) {
-                        queryWrapper.like(Volunteer::getAddress, value);
-                    } else if ("identityNumber".equals(key)) {
-                        queryWrapper.like(Volunteer::getIdentityNumber, value);
-                    } else if ("accountStatus".equals(key)) {
-                        queryWrapper.like(Volunteer::getAccountStatus, value);
-                    }
-                }
-            }
+        // 设置条件
+        if (id != null && !id.isEmpty()) {
+            queryWrapper.like(Volunteer::getId, id);
+        }
+        if (name != null && !name.isEmpty()) {
+            queryWrapper.like(Volunteer::getName, name);
+        }
+        if (address != null && !address.isEmpty()) {
+            queryWrapper.like(Volunteer::getAddress, address);
+        }
+        if (identityNumber != null && !identityNumber.isEmpty()) {
+            queryWrapper.like(Volunteer::getIdentityNumber, identityNumber);
+        }
+        if (accountStatus != null && !accountStatus.isEmpty()) {
+            queryWrapper.like(Volunteer::getAccountStatus, accountStatus);
         }
 
         // 执行查询
