@@ -190,7 +190,7 @@ public class ElderController {
          */
         @Transactional
         @PutMapping("/request/update")
-        public R<String> updateRequirement(@RequestParam("id") int id, @RequestBody(required = false) Requirement updatedRequirement) {
+        public R<String> updateRequirement(@RequestParam("id") Integer id, @RequestBody(required = false) Requirement updatedRequirement) {
             // 根据ID查询老人需求表信息
             Requirement requirement = requirementService.getById(id);
             if (requirement == null) {
@@ -221,7 +221,7 @@ public class ElderController {
      */
     @Transactional
     @DeleteMapping("/request/delete")
-    public R<String> deleteRequirementById(@RequestParam("id") int id) {
+    public R<String> deleteRequirementById(@RequestParam("id") Integer id) {
         // 检查是否存在对应ID的老人需求表信息
         Requirement existingRequirement = requirementService.getById(id);
         if (existingRequirement == null) {

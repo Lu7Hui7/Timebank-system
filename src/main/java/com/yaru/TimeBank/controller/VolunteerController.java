@@ -207,8 +207,7 @@ public class VolunteerController {
      */
     @Transactional
     @PutMapping("/activity/update")
-    public R<String> updateActivity(@RequestParam(required = false) int id, @RequestBody(required = false) Activity updatedActivity) {
-
+    public R<String> updateActivity(@RequestParam Integer id, @RequestBody(required = false) Activity updatedActivity) {
         // 根据ID查询老人需求表信息
         Activity activity = activityService.getById(id);
 
@@ -239,7 +238,7 @@ public class VolunteerController {
      */
     @Transactional
     @DeleteMapping("/activity/delete")
-    public R<String> deleteActivityById(@RequestParam("id") int id) {
+    public R<String> deleteActivityById(@RequestParam Integer id) {
         // 检查是否存在对应ID的老人需求表信息
         Activity existingActivity = activityService.getById(id);
         if (existingActivity == null) {
