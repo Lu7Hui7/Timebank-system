@@ -89,6 +89,58 @@ public class AdminController {
     }
 
     /**
+     * 老年需求者信息分页查询（只返回账户状态为冻结的老年需求者信息）
+     *
+     * @param page     当前页码
+     * @param pageSize 每页数量
+     * @param id       老年需求者ID（可选）
+     * @param name     老年需求者姓名（可选）
+     * @param address  老年需求者地址（可选）
+     * @param identityNumber 老年需求者身份证号（可选）
+     * @return 分页结果
+     */
+    @GetMapping("/elder/reviewedPage")
+    public R<Page<Elder>> elderPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String identityNumber) {
+
+        log.info("page = {}, pageSize = {}, id = {}, name = {}, address = {}, identityNumber = {}",
+                page, pageSize, id, name, address, identityNumber);
+
+        // 构造分页构造器
+        Page<Elder> pageInfo = new Page<>(page, pageSize);
+
+        // 构造条件构造器
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 设置条件
+        if (id != null && !id.isEmpty()) {
+            queryWrapper.like(Elder::getId, id);
+        }
+        if (name != null && !name.isEmpty()) {
+            queryWrapper.like(Elder::getName, name);
+        }
+        if (address != null && !address.isEmpty()) {
+            queryWrapper.like(Elder::getAddress, address);
+        }
+        if (identityNumber != null && !identityNumber.isEmpty()) {
+            queryWrapper.like(Elder::getIdentityNumber, identityNumber);
+        }
+
+        // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Elder::getAccountStatus, "冻结");
+
+        // 执行查询
+        elderService.page(pageInfo, queryWrapper);
+
+        return R.success(pageInfo);
+    }
+
+    /**
      * 老年需求者信息分页查询
      *
      * @param page            当前页码
@@ -138,6 +190,56 @@ public class AdminController {
 
         // 执行查询
         elderService.page(pageInfo, queryWrapper);
+
+        return R.success(pageInfo);
+    }
+    /**
+     * 志愿者信息分页查询（未审核）
+     *
+     * @param page           当前页码
+     * @param pageSize       每页数量
+     * @param id             志愿者ID（可选）
+     * @param name           志愿者姓名（可选）
+     * @param address        志愿者地址（可选）
+     * @param identityNumber 志愿者身份证号（可选）
+     * @return 分页结果
+     */
+    @GetMapping("/volunteer/reviewedPage")
+    public R<Page<Volunteer>> volunteerUnReviewedPage(
+            @RequestParam int page,
+            @RequestParam int pageSize,
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String address,
+            @RequestParam(required = false) String identityNumber) {
+
+        log.info("page = {}, pageSize = {}, id = {}, name = {}, address = {}, identityNumber = {}",
+                page, pageSize, id, name, address, identityNumber);
+
+        // 构造分页构造器
+        Page<Volunteer> pageInfo = new Page<>(page, pageSize);
+
+        // 构造条件构造器
+        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 设置条件
+        if (id != null && !id.isEmpty()) {
+            queryWrapper.like(Volunteer::getId, id);
+        }
+        if (name != null && !name.isEmpty()) {
+            queryWrapper.like(Volunteer::getName, name);
+        }
+        if (address != null && !address.isEmpty()) {
+            queryWrapper.like(Volunteer::getAddress, address);
+        }
+        if (identityNumber != null && !identityNumber.isEmpty()) {
+            queryWrapper.like(Volunteer::getIdentityNumber, identityNumber);
+        }
+        // 只返回账户状态为冻结的志愿者信息
+        queryWrapper.eq(Volunteer::getAccountStatus, "冻结");
+
+        // 执行查询
+        volunteerService.page(pageInfo, queryWrapper);
 
         return R.success(pageInfo);
     }
@@ -343,7 +445,7 @@ public class AdminController {
      * @param id          ID
      * @return 返回分页查询结果
      */
-    @GetMapping("/request/reviewed")
+    @GetMapping("/reviewedRequest")
     public R<Page<RequirementDTO>> elderReviewedRequestPage(
             @RequestParam int page,
             @RequestParam int pageSize,
@@ -448,7 +550,7 @@ public class AdminController {
      * @param volunteerHours 志愿时长（模糊查询）
      * @return 返回分页查询结果
      */
-    @GetMapping("/activity/reviewed")
+    @GetMapping("/reviewedActivity")
     public R<Page<ActivityDTO>> volunteerReviewedActivityPage(
             @RequestParam int page,
             @RequestParam int pageSize,

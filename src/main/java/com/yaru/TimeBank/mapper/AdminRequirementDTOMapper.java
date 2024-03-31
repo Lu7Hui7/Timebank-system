@@ -20,7 +20,7 @@ public interface AdminRequirementDTOMapper extends BaseMapper<RequirementDTO> {
             "FROM requirement r " +
             "LEFT JOIN elder e ON r.elder_id = e.id " +
             "LEFT JOIN volunteer v ON r.volunteer_id = v.id " +
-            "WHERE 1=1 " +
+            "WHERE r.status = '待审核' " +
             "<if test='serviceName != null and serviceName != \"\"'>" +
             "   AND r.service_name LIKE CONCAT('%', #{serviceName}, '%')" +
             "</if>" +

@@ -16,7 +16,7 @@ public interface AdminActivityMapper extends BaseMapper<ActivityDTO> {
             "v.name AS volunteerName, v.address AS volunteerAddress, a.activity_status AS activityStatus, a.volunteer_hours AS volunteerHours " +
             "FROM activity a " +
             "INNER JOIN volunteer v ON a.volunteer_id = v.id " +
-            "WHERE 1=1 " +
+            "WHERE a.activity_status = '待审核' " +
             "<if test='id != null and id != \"\"'>" +
             "   AND CAST(a.id AS CHAR) LIKE CONCAT('%', #{id}, '%')" +
             "</if>" +
