@@ -139,6 +139,62 @@ public class AdminController {
 
         return R.success(pageInfo);
     }
+
+    /**
+     * 获取满足条件的老年需求者信息的数量
+     *
+     * @return 老年需求者信息的数量
+     */
+    @GetMapping("/elder/total")
+    public R<Integer> elderTotalCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
+
+  /*      // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Elder::getAccountStatus, "冻结");*/
+
+        // 查询满足条件的老年需求者的数量
+        int count = elderService.count(queryWrapper);
+
+        return R.success(count);
+    }
+    /**
+     * 获取满足条件的老年需求者信息的数量（男）
+     *
+     * @return 性别男老年需求者信息的数量
+     */
+    @GetMapping("/elder/man")
+    public R<Integer> elderManCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Elder::getGender, "男");
+
+        // 查询满足条件的老年需求者的数量
+        int count = elderService.count(queryWrapper);
+
+        return R.success(count);
+    }
+
+    /**
+     * 获取满足条件的老年需求者信息的数量（女）
+     *
+     * @return 性别女满足老年需求者信息的数量
+     */
+    @GetMapping("/elder/female")
+    public R<Integer> elderFemaleCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Elder> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Elder::getGender, "女");
+
+        // 查询满足条件的老年需求者的数量
+        int count = elderService.count(queryWrapper);
+
+        return R.success(count);
+    }
     /**
      * 老年需求者信息分页查询（只返回账户状态为激活的老年需求者信息）
      *
@@ -190,7 +246,59 @@ public class AdminController {
 
         return R.success(pageInfo);
     }
+    /**
+     * 获取满足条件的志愿者信息的数量
+     *
+     * @return 志愿者的总数量
+     */
+    @GetMapping("/volunteer/total")
+    public R<Integer> volunteerTotalCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
 
+        // 查询满足条件的老年需求者的数量
+        int count = volunteerService.count(queryWrapper);
+
+        return R.success(count);
+    }
+
+    /**
+     * 获取满足条件的志愿者信息的数量（男）
+     *
+     * @return 性别男 志愿者的总数量
+     */
+    @GetMapping("/volunteer/man")
+    public R<Integer> volunteerManCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Volunteer::getGender, "男");
+
+        // 查询满足条件的老年需求者的数量
+        int count = volunteerService.count(queryWrapper);
+
+        return R.success(count);
+    }
+
+    /**
+     * 获取满足条件的志愿者信息的数量（女）
+     *
+     * @return 性别女 志愿者的总数量
+     */
+    @GetMapping("/volunteer/female")
+    public R<Integer> volunteerFemaleCount() {
+        // 构造条件构造器
+        LambdaQueryWrapper<Volunteer> queryWrapper = new LambdaQueryWrapper<>();
+
+        // 只返回账户状态为冻结的老年需求者信息
+        queryWrapper.eq(Volunteer::getGender, "女");
+
+        // 查询满足条件的老年需求者的数量
+        int count = volunteerService.count(queryWrapper);
+
+        return R.success(count);
+    }
     /**
      * 老年需求者信息分页查询
      *
