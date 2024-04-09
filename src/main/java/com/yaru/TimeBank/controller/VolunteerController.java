@@ -127,7 +127,7 @@ public class VolunteerController {
 
         // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
         BeanUtils.copyProperties(updatedUserInfo, volunteer);
-
+        volunteer.setId(volunteerId);
         // 更新老年需求者信息
         volunteerService.updateById(volunteer);
 

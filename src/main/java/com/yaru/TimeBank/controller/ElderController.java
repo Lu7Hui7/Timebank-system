@@ -107,22 +107,24 @@ public class ElderController {
      * @param updatedUserInfo 更新后的老年需求者用户信息
      * @return 返回操作结果
      */
+    @Transactional
     @PutMapping("/update")
     public R<String> updateElderUserInfo(@RequestBody(required = false) Elder updatedUserInfo) {
         if (updatedUserInfo == null) {
             return R.error("请求体为空");
         }
         Long id = (Long)session.getAttribute("elder");
+
         // 根据ID查询老年需求者信息
         Elder elder = elderService.getById(id);
         if (elder == null) {
             // 如果找不到对应ID的老年需求者，返回错误信息
             return R.error("找不到对应ID的老年需求者");
         }
-
+        System.out.println(updatedUserInfo.getPhysical().toString());
         // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
         BeanUtils.copyProperties(updatedUserInfo, elder);
-
+        elder.setId(id);
         // 更新老年需求者信息
         elderService.updateById(elder);
 
