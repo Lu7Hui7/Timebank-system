@@ -101,13 +101,14 @@ public class VolunteerController {
 
         return R.success("志愿者注册成功");
     }
+
     /**
-     * 根据id修改志愿者者的用户信息
-     * @param updatedUserInfo 更新后的志愿者者用户信息
+     * 根据id修改志愿者的用户信息
+     * @param updatedUserInfo 更新后的志愿者用户信息
      * @return 返回操作结果
      */
     @PutMapping("/update")
-    public R<String> updateVolunteerUserInfo( @RequestBody(required = false) Volunteer updatedUserInfo) {
+    public R<String> updateVolunteerUserInfo(@RequestBody(required = false) Volunteer updatedUserInfo) {
         if (updatedUserInfo == null) {
             return R.error("请求体为空");
         }
@@ -117,22 +118,48 @@ public class VolunteerController {
             return R.error("未登录或登录已失效，请重新登录！");
         }
 
-        // 根据ID查询老年需求者信息
+        // 根据ID查询志愿者信息
         Volunteer volunteer = volunteerService.getById(volunteerId);
         if (volunteer == null) {
-            // 如果找不到对应ID的老年需求者，返回错误信息
+            // 如果找不到对应ID的志愿者，返回错误信息
             return R.error("找不到对应ID的志愿者");
-
         }
 
-        // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
-        BeanUtils.copyProperties(updatedUserInfo, volunteer);
-        volunteer.setId(volunteerId);
-        // 更新老年需求者信息
+        // 更新存在的属性到志愿者对象中
+        if (updatedUserInfo.getName() != null) {
+            volunteer.setName(updatedUserInfo.getName());
+        }
+        if (updatedUserInfo.getUsername() != null) {
+            volunteer.setUsername(updatedUserInfo.getUsername());
+        }
+        if (updatedUserInfo.getPhone() != null) {
+            volunteer.setPhone(updatedUserInfo.getPhone());
+        }
+        if (updatedUserInfo.getGender() != null) {
+            volunteer.setGender(updatedUserInfo.getGender());
+        }
+        if (updatedUserInfo.getAddress() != null) {
+            volunteer.setAddress(updatedUserInfo.getAddress());
+        }
+        if (updatedUserInfo.getIdentityNumber() != null) {
+            volunteer.setIdentityNumber(updatedUserInfo.getIdentityNumber());
+        }
+        if (updatedUserInfo.getAccountStatus() != null) {
+            volunteer.setAccountStatus(updatedUserInfo.getAccountStatus());
+        }
+        if (updatedUserInfo.getPhysical() != null) {
+            volunteer.setPhysical(updatedUserInfo.getPhysical());
+        }
+        if (updatedUserInfo.getRemark() != null) {
+            volunteer.setRemark(updatedUserInfo.getRemark());
+        }
+
+        // 更新志愿者信息
         volunteerService.updateById(volunteer);
 
         return R.success("志愿者信息已更新");
     }
+
 
     /**
      * 创建需求

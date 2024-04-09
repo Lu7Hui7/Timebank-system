@@ -102,6 +102,7 @@ public class ElderController {
 
         return R.success("老年需求者注册成功");
     }
+
     /**
      * 根据id修改老年需求者的用户信息
      * @param updatedUserInfo 更新后的老年需求者用户信息
@@ -113,7 +114,7 @@ public class ElderController {
         if (updatedUserInfo == null) {
             return R.error("请求体为空");
         }
-        Long id = (Long)session.getAttribute("elder");
+        Long id = (Long) session.getAttribute("elder");
 
         // 根据ID查询老年需求者信息
         Elder elder = elderService.getById(id);
@@ -121,10 +122,39 @@ public class ElderController {
             // 如果找不到对应ID的老年需求者，返回错误信息
             return R.error("找不到对应ID的老年需求者");
         }
-        System.out.println(updatedUserInfo.getPhysical().toString());
-        // 使用BeanUtils.copyProperties()方法将请求体中的属性复制到老年需求者对象中
-        BeanUtils.copyProperties(updatedUserInfo, elder);
-        elder.setId(id);
+
+        // 更新存在的属性到elder对象中
+        if (updatedUserInfo.getName() != null) {
+            elder.setName(updatedUserInfo.getName());
+        }
+        if (updatedUserInfo.getUsername() != null) {
+            elder.setUsername(updatedUserInfo.getUsername());
+        }
+        if (updatedUserInfo.getPhone() != null) {
+            elder.setPhone(updatedUserInfo.getPhone());
+        }
+        if (updatedUserInfo.getGender() != null) {
+            elder.setGender(updatedUserInfo.getGender());
+        }
+        if (updatedUserInfo.getAddress() != null) {
+            elder.setAddress(updatedUserInfo.getAddress());
+        }
+        if (updatedUserInfo.getIdentityNumber() != null) {
+            elder.setIdentityNumber(updatedUserInfo.getIdentityNumber());
+        }
+        if (updatedUserInfo.getAccountStatus() != null) {
+            elder.setAccountStatus(updatedUserInfo.getAccountStatus());
+        }
+        if (updatedUserInfo.getPhysical() != null) {
+            elder.setPhysical(updatedUserInfo.getPhysical());
+        }
+        if (updatedUserInfo.getRemark() != null) {
+            elder.setRemark(updatedUserInfo.getRemark());
+        }
+        if (updatedUserInfo.getChildrenPhone() != null) {
+            elder.setChildrenPhone(updatedUserInfo.getChildrenPhone());
+        }
+
         // 更新老年需求者信息
         elderService.updateById(elder);
 
