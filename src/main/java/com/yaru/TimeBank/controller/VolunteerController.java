@@ -183,7 +183,7 @@ public class VolunteerController {
 
             // 设置志愿者ID
             activity.setVolunteerId(volunteerId);
-
+            activity.setId(0);
             // 保存需求到数据库
             activityService.save(activity);
 

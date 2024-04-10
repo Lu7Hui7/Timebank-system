@@ -181,7 +181,7 @@ public class ElderController {
 
         // 设置老人ID
         requirement.setElderId(elderId);
-
+        requirement.setId(0);
         // 保存需求到数据库
         requirementService.save(requirement);
 
