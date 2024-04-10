@@ -126,31 +126,28 @@ public class VolunteerController {
         }
 
         // 更新存在的属性到志愿者对象中
-        if (!updatedUserInfo.getName().isEmpty()) {
+        if (updatedUserInfo.getName() != null && !updatedUserInfo.getName().isEmpty()) {
             volunteer.setName(updatedUserInfo.getName());
         }
-        if (!updatedUserInfo.getUsername().isEmpty()) {
-            volunteer.setUsername(updatedUserInfo.getUsername());
-        }
-        if (!updatedUserInfo.getPhone().isEmpty()) {
+        if (updatedUserInfo.getPhone() != null && !updatedUserInfo.getPhone().isEmpty()) {
             volunteer.setPhone(updatedUserInfo.getPhone());
         }
-        if (!updatedUserInfo.getGender().isEmpty()) {
+        if (updatedUserInfo.getGender() != null && !updatedUserInfo.getGender().isEmpty()) {
             volunteer.setGender(updatedUserInfo.getGender());
         }
-        if (!updatedUserInfo.getAddress().isEmpty()) {
+        if (updatedUserInfo.getAddress() != null && !updatedUserInfo.getAddress().isEmpty()) {
             volunteer.setAddress(updatedUserInfo.getAddress());
         }
-        if (!updatedUserInfo.getIdentityNumber().isEmpty()) {
+        if (updatedUserInfo.getIdentityNumber() != null && !updatedUserInfo.getIdentityNumber().isEmpty()) {
             volunteer.setIdentityNumber(updatedUserInfo.getIdentityNumber());
         }
-        if (!updatedUserInfo.getAccountStatus().isEmpty()) {
+        if (updatedUserInfo.getAccountStatus() != null && !updatedUserInfo.getAccountStatus().isEmpty()) {
             volunteer.setAccountStatus(updatedUserInfo.getAccountStatus());
         }
-        if (!updatedUserInfo.getPhysical().isEmpty()) {
+        if (updatedUserInfo.getPhysical() != null && !updatedUserInfo.getPhysical().isEmpty()) {
             volunteer.setPhysical(updatedUserInfo.getPhysical());
         }
-        if (!updatedUserInfo.getRemark().isEmpty()) {
+        if (updatedUserInfo.getRemark() != null && !updatedUserInfo.getRemark().isEmpty()) {
             volunteer.setRemark(updatedUserInfo.getRemark());
         }
 

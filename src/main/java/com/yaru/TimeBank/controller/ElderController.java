@@ -124,31 +124,34 @@ public class ElderController {
         }
 
         // 更新存在的属性到elder对象中
-        if (!updatedUserInfo.getName().isEmpty()) {
+        if (updatedUserInfo.getName() != null && !updatedUserInfo.getName().isEmpty()) {
             elder.setName(updatedUserInfo.getName());
         }
-        if (!updatedUserInfo.getPhone().isEmpty()) {
+        if (updatedUserInfo.getUsername() != null && !updatedUserInfo.getUsername().isEmpty()) {
+            elder.setUsername(updatedUserInfo.getUsername());
+        }
+        if (updatedUserInfo.getPhone() != null && !updatedUserInfo.getPhone().isEmpty()) {
             elder.setPhone(updatedUserInfo.getPhone());
         }
-        if (!updatedUserInfo.getGender().isEmpty()) {
+        if (updatedUserInfo.getGender() != null && !updatedUserInfo.getGender().isEmpty()) {
             elder.setGender(updatedUserInfo.getGender());
         }
-        if (!updatedUserInfo.getAddress().isEmpty()) {
+        if (updatedUserInfo.getAddress() != null && !updatedUserInfo.getAddress().isEmpty()) {
             elder.setAddress(updatedUserInfo.getAddress());
         }
-        if (!updatedUserInfo.getIdentityNumber().isEmpty()) {
+        if (updatedUserInfo.getIdentityNumber() != null && !updatedUserInfo.getIdentityNumber().isEmpty()) {
             elder.setIdentityNumber(updatedUserInfo.getIdentityNumber());
         }
-        if (!updatedUserInfo.getAccountStatus().isEmpty()) {
+        if (updatedUserInfo.getAccountStatus() != null && !updatedUserInfo.getAccountStatus().isEmpty()) {
             elder.setAccountStatus(updatedUserInfo.getAccountStatus());
         }
-        if (!updatedUserInfo.getPhysical().isEmpty()) {
+        if (updatedUserInfo.getPhysical() != null && !updatedUserInfo.getPhysical().isEmpty()) {
             elder.setPhysical(updatedUserInfo.getPhysical());
         }
-        if (!updatedUserInfo.getRemark().isEmpty()) {
+        if (updatedUserInfo.getRemark() != null && !updatedUserInfo.getRemark().isEmpty()) {
             elder.setRemark(updatedUserInfo.getRemark());
         }
-        if (!updatedUserInfo.getChildrenPhone().isEmpty()) {
+        if (updatedUserInfo.getChildrenPhone() != null && !updatedUserInfo.getChildrenPhone().isEmpty()) {
             elder.setChildrenPhone(updatedUserInfo.getChildrenPhone());
         }
 
