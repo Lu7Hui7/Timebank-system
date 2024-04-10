@@ -126,31 +126,31 @@ public class VolunteerController {
         }
 
         // 更新存在的属性到志愿者对象中
-        if (updatedUserInfo.getName() != null) {
+        if (!updatedUserInfo.getName().isEmpty()) {
             volunteer.setName(updatedUserInfo.getName());
         }
-        if (updatedUserInfo.getUsername() != null) {
+        if (!updatedUserInfo.getUsername().isEmpty()) {
             volunteer.setUsername(updatedUserInfo.getUsername());
         }
-        if (updatedUserInfo.getPhone() != null) {
+        if (!updatedUserInfo.getPhone().isEmpty()) {
             volunteer.setPhone(updatedUserInfo.getPhone());
         }
-        if (updatedUserInfo.getGender() != null) {
+        if (!updatedUserInfo.getGender().isEmpty()) {
             volunteer.setGender(updatedUserInfo.getGender());
         }
-        if (updatedUserInfo.getAddress() != null) {
+        if (!updatedUserInfo.getAddress().isEmpty()) {
             volunteer.setAddress(updatedUserInfo.getAddress());
         }
-        if (updatedUserInfo.getIdentityNumber() != null) {
+        if (!updatedUserInfo.getIdentityNumber().isEmpty()) {
             volunteer.setIdentityNumber(updatedUserInfo.getIdentityNumber());
         }
-        if (updatedUserInfo.getAccountStatus() != null) {
+        if (!updatedUserInfo.getAccountStatus().isEmpty()) {
             volunteer.setAccountStatus(updatedUserInfo.getAccountStatus());
         }
-        if (updatedUserInfo.getPhysical() != null) {
+        if (!updatedUserInfo.getPhysical().isEmpty()) {
             volunteer.setPhysical(updatedUserInfo.getPhysical());
         }
-        if (updatedUserInfo.getRemark() != null) {
+        if (!updatedUserInfo.getRemark().isEmpty()) {
             volunteer.setRemark(updatedUserInfo.getRemark());
         }
 

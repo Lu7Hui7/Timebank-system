@@ -124,34 +124,31 @@ public class ElderController {
         }
 
         // 更新存在的属性到elder对象中
-        if (updatedUserInfo.getName() != null) {
+        if (!updatedUserInfo.getName().isEmpty()) {
             elder.setName(updatedUserInfo.getName());
         }
-        if (updatedUserInfo.getUsername() != null) {
-            elder.setUsername(updatedUserInfo.getUsername());
-        }
-        if (updatedUserInfo.getPhone() != null) {
+        if (!updatedUserInfo.getPhone().isEmpty()) {
             elder.setPhone(updatedUserInfo.getPhone());
         }
-        if (updatedUserInfo.getGender() != null) {
+        if (!updatedUserInfo.getGender().isEmpty()) {
             elder.setGender(updatedUserInfo.getGender());
         }
-        if (updatedUserInfo.getAddress() != null) {
+        if (!updatedUserInfo.getAddress().isEmpty()) {
             elder.setAddress(updatedUserInfo.getAddress());
         }
-        if (updatedUserInfo.getIdentityNumber() != null) {
+        if (!updatedUserInfo.getIdentityNumber().isEmpty()) {
             elder.setIdentityNumber(updatedUserInfo.getIdentityNumber());
         }
-        if (updatedUserInfo.getAccountStatus() != null) {
+        if (!updatedUserInfo.getAccountStatus().isEmpty()) {
             elder.setAccountStatus(updatedUserInfo.getAccountStatus());
         }
-        if (updatedUserInfo.getPhysical() != null) {
+        if (!updatedUserInfo.getPhysical().isEmpty()) {
             elder.setPhysical(updatedUserInfo.getPhysical());
         }
-        if (updatedUserInfo.getRemark() != null) {
+        if (!updatedUserInfo.getRemark().isEmpty()) {
             elder.setRemark(updatedUserInfo.getRemark());
         }
-        if (updatedUserInfo.getChildrenPhone() != null) {
+        if (!updatedUserInfo.getChildrenPhone().isEmpty()) {
             elder.setChildrenPhone(updatedUserInfo.getChildrenPhone());
         }
 
