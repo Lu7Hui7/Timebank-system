@@ -72,7 +72,7 @@ public class ElderController {
 
             session.setAttribute("elder",e.getId());
             // 设置session的最大不活动间隔为30分钟（30 * 60 秒）
-            session.setMaxInactiveInterval(30 * 60);
+//            session.setMaxInactiveInterval(30 * 60);
         }
         return R.success(e);
     }
@@ -310,5 +310,7 @@ public class ElderController {
         // 返回分页查询结果
         return R.success(resultPage);
     }
+
+
 
 }

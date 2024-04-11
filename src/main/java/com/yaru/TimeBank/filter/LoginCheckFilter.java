@@ -26,6 +26,17 @@ public class LoginCheckFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
+        String origin = request.getHeader("Origin");
+        if(origin == null) {
+            origin = request.getHeader("Referer");
+        }
+        response.setHeader("Access-Control-Allow-Origin", origin);//这里不能写*，*代表接受所有域名访问，如写*则下面一行代码无效。谨记
+        response.setHeader("Access-Control-Allow-Credentials", "true");//true代表允许携带cookie
+        //下面这两个也很关键
+        response.setHeader("Access-Control-Allow-Methods", "*");
+        response.setHeader("Access-Control-Allow-Headers", "Content-Type,Access-Token");
+//        resp.setHeader("Access-Control-Expose-Headers", "*");
+
         //1、获取本次请求的URI
         String requestURI = request.getRequestURI();// /backend/index.html
 
@@ -42,7 +53,8 @@ public class LoginCheckFilter implements Filter{
                 "/volunteer/**",
                 "/volunteer/logout",
                 "/elder/**",
-                "/elder/logout"
+                "/elder/logout",
+                "/Order/**"
         };
 
         //2、判断本次请求是否需要处理
@@ -99,4 +111,10 @@ public class LoginCheckFilter implements Filter{
         }
         return false;
     }
+
+    @Override
+    public void init(FilterConfig arg0) throws ServletException {
+
+    }
+
 }
