@@ -11,6 +11,7 @@ import com.yaru.TimeBank.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,7 +53,7 @@ public class AdminController {
 
         //1、将页面提交的密码password进行md5加密处理
         String password = admin.getPassword();
-        /*password = DigestUtils.md5DigestAsHex(password.getBytes());*/
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
 
         //2、根据页面提交的用户名username查询数据库
         LambdaQueryWrapper<Admin> queryWrapper = new LambdaQueryWrapper<>();

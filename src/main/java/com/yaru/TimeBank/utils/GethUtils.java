@@ -36,7 +36,7 @@ public class GethUtils {
     private final Web3j web3j = Web3j.build(new HttpService("http://localhost:8545"));// Web3j实例，用于与以太坊节点通信// 替换为您的RPC节点URL
     private final Credentials credentials;// 交易管理器，处理交易相关操作
     private final TimeBank contract;// TimeBank智能合约实例，用于与合约交互
-    private final String contractAddress = "0xfc2d8584f1f042f041545cd928b3ad267782e12c";// 智能合约地址，替换为您的智能合约地址
+    private final String contractAddress = "0x42de4c5918f1f5287fae93a44a54a86dcfc84fc7";// 智能合约地址，替换为您的智能合约地址
     String privateKey = "0x9521878a143730d9fdf1d88b2fcdba57e063e0a2";
     public GethUtils() throws CipherException, IOException {
         // 使用私钥创建交易管理器
@@ -145,6 +145,8 @@ public class GethUtils {
 
         Collections.sort(secondelement);
         Collections.sort(thirdelement);
+        System.out.println(secondelement);
+        System.out.println(thirdelement);
         System.out.println(Objects.equals(secondelement.get(0), thirdelement.get(0)) );
         if(Objects.equals(secondelement.get(0), thirdelement.get(0)) && Objects.equals(secondelement.get(1), thirdelement.get(1)) && Objects.equals(secondelement.get(2), thirdelement.get(2))){
             return true;

@@ -153,12 +153,12 @@ public class AOrderController {
         String eldIdentity = eld.getIdentityNumber();
         System.out.println(eldIdentity);
         AOrder order = new AOrder();
-        order.setId(2L);
+        order.setId(3L);
         order.setSenderAddress(eldIdentity);
         order.setReceiverAddress(volIdentity);
         order.setOrderTime(LocalDateTime.now());
         order.setState(0);
-        order.setFinishTime(2);
+        order.setFinishTime(Math.toIntExact(act.getVolunteerHours()));
         orderService.save(order);
 
         LambdaQueryWrapper<Account> queryWrapperAccount1 = new LambdaQueryWrapper<>();
@@ -202,12 +202,12 @@ public class AOrderController {
         String volIdentity = vol.getIdentityNumber();
 
         AOrder order = new AOrder();
-        order.setId(2L);
+        order.setId(3L);
         order.setSenderAddress(eldIdentity);
         order.setReceiverAddress(volIdentity);
         order.setOrderTime(LocalDateTime.now());
         order.setState(0);
-        order.setFinishTime(2);
+        order.setFinishTime(Math.toIntExact(req.getDurationHours()));
         orderService.save(order);
 
         LambdaQueryWrapper<Account> queryWrapperAccount1 = new LambdaQueryWrapper<>();
@@ -360,6 +360,7 @@ public class AOrderController {
         if(gethUtils.getcontract()){
             gethUtils.deletecharacter(character.get(0),character.get(1),character.get(2));
             order.setOMoney((order.getFinishTime()*60/10));
+            order.setState(order.getState()+1);
             orderService.updateById(order);
             LambdaQueryWrapper<Account> queryWrapperAccount1 = new LambdaQueryWrapper<>();
             queryWrapperAccount1.eq(Account::getIdentityNumber,order.getSenderAddress());

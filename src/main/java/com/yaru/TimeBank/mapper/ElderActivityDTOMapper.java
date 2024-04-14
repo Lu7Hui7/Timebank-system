@@ -28,6 +28,7 @@ public interface ElderActivityDTOMapper extends BaseMapper<ActivityDTO> {
             "<if test='volunteerHours != null and volunteerHours != \"\"'>" +
             "   AND a.volunteer_hours LIKE CONCAT('%', #{volunteerHours}, '%')" +
             "</if>" +
+            " AND a.activity_status = '审核通过'" + // 添加审核通过的条件
             "</script>")
     IPage<ActivityDTO> getActivityPage(Page<?> page,
                                             @Param("id") String id,
